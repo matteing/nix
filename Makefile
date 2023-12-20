@@ -9,6 +9,10 @@ init:
 rebuild:
 	darwin-rebuild switch --flake .#matteing-mbp
 
+sync:
+	git pull
+	darwin-rebuild switch --flake .#matteing-mbp
+
 langs:
 	asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
 	asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
