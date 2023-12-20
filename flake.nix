@@ -40,10 +40,11 @@
   in
   {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#mbp
-    darwinConfigurations."mbp" = nix-darwin.lib.darwinSystem {
+    # $ darwin-rebuild build --flake .#matteing-mbp
+    darwinConfigurations."matteing-mbp" = nix-darwin.lib.darwinSystem {
       modules = [ 
         configuration
+        ./modules/hostname.nix
         ./modules/system.nix
         ./modules/apps.nix
       ];
@@ -51,6 +52,6 @@
     };
 
     # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."mbp".pkgs;
+    darwinPackages = self.darwinConfigurations."matteing-mbp".pkgs;
   };
 }

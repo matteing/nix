@@ -49,13 +49,11 @@
     ];
 
     # `brew install`
-    # TODO Feel free to add your favorite apps here.
     brews = [
       "wxwidgets"
     ];
 
     # `brew install --cask`
-    # TODO Feel free to add your favorite apps here.
     casks = [
       "1password"
       "firefox"
@@ -104,9 +102,4 @@
     #   "747648890" # Telegram
     # ]
   };
-
-  # environment.etc."bashrc".knownSha256Hashes = ["08ffbf991a9e25839d38b80a0d3bce3b5a6c84b9be53a4b68949df4e7e487bb7"];
-  # environment.etc."zshrc".knownSha256Hashes = ["2af1b563e389d11b76a651b446e858116d7a20370d9120a7e9f78991f3e5f336"];
-  # environment.etc."zshenv".knownSha256Hashes = ["d07015be6875f134976fce84c6c7a77b512079c1c5f9594dfa65c70b7968b65f"];
-  # environment.etc."nix/nix.conf".knownSha256Hashes = ["97f4135d262ca22d65c9554aad795c10a4491fa61b67d9c2430f4d82bbfec9a2"];
 }

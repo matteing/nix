@@ -8,7 +8,6 @@
 #############################################################
 
 let
-  # TODO change this to your hostname & username
   hostname = "matteing-mbp";
   username = "sergio";
 in
