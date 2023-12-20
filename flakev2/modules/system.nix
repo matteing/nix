@@ -36,7 +36,7 @@
 
       CustomUserPreferences = {
         "com.googlecode.iterm2" = {
-          "PrefsCustomFolder" = "/Volumes/My Shared Files/nix-playground/iterm";
+          "PrefsCustomFolder" = "../iterm";
           "LoadPrefsFromCustomFolder" = true;
         };
       };
