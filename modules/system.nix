@@ -43,7 +43,7 @@
     interactiveShellInit = ''
       export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh";
       source $ZSH/oh-my-zsh.sh;
-      ${(builtins.readFile ../zsh/bubblegum.zsh-theme)}
+      ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
     '';
     promptInit = "";
   };
