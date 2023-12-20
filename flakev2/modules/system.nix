@@ -1,4 +1,4 @@
-{ pkgs, self, ... }:
+{ pkgs, ... }:
 
   ###################################################################################
   #
@@ -36,7 +36,7 @@
 
       CustomUserPreferences = {
         "com.googlecode.iterm2" = {
-          "PrefsCustomFolder" = "${self}/iterm";
+          "PrefsCustomFolder" = ../iterm;
           "LoadPrefsFromCustomFolder" = true;
         };
       };
