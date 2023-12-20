@@ -40,8 +40,8 @@
   in
   {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#simple
-    darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
+    # $ darwin-rebuild build --flake .#mbp
+    darwinConfigurations."mbp" = nix-darwin.lib.darwinSystem {
       modules = [ 
         configuration
         ./modules/system.nix
@@ -50,6 +50,6 @@
     };
 
     # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."simple".pkgs;
+    darwinPackages = self.darwinConfigurations."mbp".pkgs;
   };
 }
