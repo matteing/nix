@@ -8,3 +8,6 @@ init:
 
 rebuild:
 	darwin-rebuild switch --flake .#matteing-mbp
+
+extras:
+	touch ~/.hushlogin
