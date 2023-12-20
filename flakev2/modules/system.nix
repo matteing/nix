@@ -19,20 +19,8 @@
     '';
 
     defaults = {
-      menuExtraClock.ShowSeconds = true;
+      # menuExtraClock.ShowSeconds = true;
       # NSGlobalDomain.AppleInterfaceStyle = "Dark";
-      # other macOS's defaults configuration.
-      # ......
-
-      CustomSystemPreferences = {
-        "com.apple.Safari.SandboxBroker" = {
-          ShowDevelopMenu = true;
-        };
-
-        "com.apple.Safari" = {
-          IncludeDevelopMenu = true;
-        };
-      };
 
       CustomUserPreferences = {
         "com.googlecode.iterm2" = {
