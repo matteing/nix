@@ -47,6 +47,7 @@
         ./modules/system.nix
         ./modules/apps.nix
       ];
+      specialArgs = { inherit inputs; };
     };
 
     # Expose the package set, including overlays, for convenience.
