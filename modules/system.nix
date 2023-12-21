@@ -40,6 +40,7 @@ in
       # Set up the dock.
       ${pkgs.dockutil}/bin/dockutil --remove all --no-restart
       ${dockutilCommandsString}
+      killall Dock
     '';
 
     defaults = {
