@@ -22,7 +22,9 @@
     enable = true;
     oh-my-zsh = {
       enable = true;
-      theme = "robbyrussell";
+      initExtra = ''
+        ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
+      ''
     };
   };
 }

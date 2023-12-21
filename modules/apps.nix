@@ -26,7 +26,7 @@
     yt-dlp
     wget
     swift-format
-    oh-my-zsh
+    # oh-my-zsh
   ];
 
   # 
