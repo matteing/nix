@@ -1,10 +1,10 @@
-.PHONY: fresh-darwin init rebuild checkin checkin-lock pull sync langs langs extras
+.PHONY: prepare init rebuild checkin checkin-lock pull sync langs langs extras
 
 current_datetime := $(shell date +"%Y-%m-%d %H:%M:%S")
 
-fresh-darwin:
+prepare:
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 init:
 	nix run nix-darwin -- switch --flake .#matteing-mbp
