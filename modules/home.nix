@@ -35,13 +35,13 @@
       # Initialize applications that package optional CLI utilities.
       append_to_bin=(
         "/Applications/Postgres.app/Contents/Versions/latest/bin"
-        "/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin"
+        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
       )
 
       for dir in $append_to_bin; do
         # If path exists...
         if [ -d "$dir" ]; then
-          export PATH="$PATH:$dir"
+          export PATH="$dir:$PATH"
         fi
       done
     '';
