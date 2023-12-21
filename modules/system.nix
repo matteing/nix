@@ -38,7 +38,7 @@ in
       osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
 
       # Set up the dock.
-      ${dockutilCommands}
+      ${dockutilCommandsString}
     '';
 
     defaults = {
