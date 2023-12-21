@@ -18,10 +18,10 @@ in
 
   # https://discourse.nixos.org/t/support-request-conflicting-definition-of-homedirectory-while-integrating-nix-darwin-and-home-manager/13927
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users."${username}"= {
-  #   home = "/Users/${username}";
-  #   description = username;
-  # };
+  users.users."${username}"= {
+    home = "/Users/${username}";
+    description = username;
+  };
 
   nix.settings.trusted-users = [ username ];
 }
