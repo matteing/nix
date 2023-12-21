@@ -40,7 +40,7 @@ in
 
     sessionVariables = {
       ERL_AFLAGS = "-kernel shell_history enabled -kernel shell_history_file_bytes 1024000";
-      KERL_CONFIGURE_OPTIONS="--disable-debug --disable-silent-rules --enable-dynamic-ssl-lib --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --with-ssl=/opt/homebrew/opt/openssl@1.1 --without-javac --enable-darwin-64bit --enable-kernel-poll --with-dynamic-trace=dtrace";
+      KERL_CONFIGURE_OPTIONS="--enable-dynamic-ssl-lib --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --disable-debug --without-javac";
     };
 
     initExtra = ''
