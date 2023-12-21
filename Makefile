@@ -1,6 +1,9 @@
-.PHONY: prepare init rebuild
+.PHONY: fresh-darwin init rebuild checkin sync langs extras
 
-prepare:
+current_datetime := $(shell date +"%Y-%m-%d %H:%M:%S")
+
+fresh-darwin:
+	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 init:
@@ -8,6 +11,11 @@ init:
 
 rebuild:
 	darwin-rebuild switch --flake .#matteing-mbp
+
+checkin:
+	git add .
+	git commit -m "[checkin] $(current_datetime)"
+	git push
 
 sync:
 	git pull
@@ -21,6 +29,9 @@ langs:
 	asdf install erlang latest
 	asdf install elixir latest
 	asdf install nodejs latest
+	asdf global erlang latest
+	asdf global elixir latest
+	asdf global nodejs latest
 
 extras:
 	touch ~/Projects
