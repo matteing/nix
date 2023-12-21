@@ -37,6 +37,7 @@
 
     initExtra = ''
       ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
+      export RPROMPT=""
 
       # Initialize applications that package optional CLI utilities.
       append_to_bin=(
