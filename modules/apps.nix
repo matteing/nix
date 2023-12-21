@@ -43,9 +43,12 @@
       "readline"
       "xz"
       # This is the best optimized version of OpenSSl for macOS.
+      # Tried using the nixpkgs version, but no .dylibs in the include folder.
       "openssl@3"
       # Erlang's :observer module needs WXWidgets.
       "wxwidgets"
+      # Can't find this in nixpkgs
+      "trash"
     ];
 
     # `brew install --cask`
