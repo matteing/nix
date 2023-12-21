@@ -14,7 +14,7 @@ let
     "Safari.app"
     "Mail.app"
     "Calendar.app"
-    "Visual Studio Code.app"
+    "Visual\\ Studio\\ Code.app"
     # "Things.app"
     # "iA Writer.app"
     "Music.app"
