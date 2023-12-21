@@ -16,8 +16,6 @@
     yt-dlp
     wget
     swift-format
-    openssl
-    openssl.dev
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
@@ -39,6 +37,8 @@
 
     # `brew install`
     brews = [
+      # This is the best optimized version of OpenSSl for macOS.
+      "openssl@3"
       "wxwidgets"
     ];
 
