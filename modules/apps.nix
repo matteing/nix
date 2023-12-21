@@ -81,6 +81,7 @@
       "dash"
       "orbstack"
       "logi-options-plus"
+      "spotify"
     ];
 
     # Mac App Store apps.
