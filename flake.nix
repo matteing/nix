@@ -43,19 +43,19 @@
         configuration
 
         # Set up Home Manager
-        home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.sergio = import ./modules/home.nix;
-            # DRY this up with extraspecialargs?
-          }
+        home-manager.darwinModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.sergio = import ./modules/home.nix;
+          # DRY this up with extraspecialargs?
+        }
 
         # Custom modules
         ./modules/hostname.nix
         ./modules/system.nix
         ./modules/apps.nix
       ];
+      
       specialArgs = { inherit inputs; };
     };
 
