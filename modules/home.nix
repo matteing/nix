@@ -29,6 +29,11 @@
       workon = "cd ~/Projects/$1";
     };
 
+    sessionVariables = {
+      ERL_AFLAGS = "-kernel shell_history enabled -kernel shell_history_file_bytes 1024000";
+      KERL_CONFIGURE_OPTIONS="--disable-debug --disable-silent-rules --enable-dynamic-ssl-lib --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --with-ssl=/opt/homebrew/opt/openssl@1.1 --without-javac --enable-darwin-64bit --enable-kernel-poll --with-dynamic-trace=dtrace";
+    };
+
     initExtra = ''
       ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
 
@@ -45,6 +50,7 @@
         fi
       done
 
+      # Initialize the asdf version manager.
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
     '';
   };
