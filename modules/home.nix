@@ -26,7 +26,7 @@
     };
 
     shellAliases = {
-      code = "/Applicatons/Visual Studio Code.app/Contents/Resources/app/bin/code";
+      code = "/Applicatons/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code";
       workon = "cd ~/Projects/$1";
     };
 
