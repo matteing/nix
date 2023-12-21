@@ -26,14 +26,24 @@
     };
 
     shellAliases = {
-      code = ''
-        /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code
-      '';
       workon = "cd ~/Projects/$1";
     };
 
     initExtra = ''
       ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
+
+      # Initialize applications that package optional CLI utilities.
+      append_to_bin=(
+        "/Applications/Postgres.app/Contents/Versions/latest/bin"
+        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+      )
+
+      for dir in $directories; do
+        # If path exists...
+        if [ -d "$dir" ]; then
+          export PATH="$dir:$PATH"
+        fi
+      done
     '';
   };
 }

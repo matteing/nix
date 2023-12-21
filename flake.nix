@@ -48,6 +48,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.sergio = import ./modules/home.nix;
+            # DRY this up with extraspecialargs?
           }
 
         # Custom modules
