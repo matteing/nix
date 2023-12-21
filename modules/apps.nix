@@ -53,6 +53,14 @@
 
     # `brew install --cask`
     casks = [
+      # Fonts
+      "font-fira-code"
+      "font-inconsolata"
+      "font-inter"
+      "font-jetbrains-mono"
+      "sf-symbols"
+
+      # Apps
       "1password"
       "firefox"
       "visual-studio-code"
@@ -61,16 +69,11 @@
       "appcleaner"
       "cyberduck"
       "discord"
-      "font-fira-code"
-      "font-inconsolata"
-      "font-inter"
-      "font-jetbrains-mono"
       "rectangle"
       "sublime-text"
       "tableplus"
       "transmission"
       "utm"
-      "sf-symbols"
       "raycast"
       "screen-studio"
       "obsidian"
