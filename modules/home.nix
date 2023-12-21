@@ -37,6 +37,8 @@
 
     initExtra = ''
       ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
+
+      # Disable the right-hand side prompt (unsure why it's even set at all?)
       export RPROMPT=""
 
       # Initialize applications that package optional CLI utilities.
