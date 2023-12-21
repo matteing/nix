@@ -1,4 +1,4 @@
-.PHONY: fresh-darwin init rebuild checkin sync langs extras
+.PHONY: fresh-darwin init rebuild checkin pull sync langs extras
 
 current_datetime := $(shell date +"%Y-%m-%d %H:%M:%S")
 
@@ -16,6 +16,9 @@ checkin:
 	git add .
 	git commit -m "[checkin] $(current_datetime)"
 	git push
+
+pull:
+	git pull
 
 sync:
 	git pull
