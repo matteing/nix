@@ -3,7 +3,6 @@
   <span align="center">My declarative system configuration for macOS.</span>
 </p>
 
-## What's here?
 I've aimed to create a minimal, pragmatic setup for my machine using Nix. I won't go too off the deep-end here, but will try some Nix features to simplify my development environment.
 
 1. Declarative package & app management
