@@ -44,6 +44,8 @@
           export PATH="$dir:$PATH"
         fi
       done
+
+      . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
     '';
   };
 }
