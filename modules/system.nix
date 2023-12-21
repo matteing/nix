@@ -1,13 +1,9 @@
+/* -------------------------------------------------------------------------- */
+/*             This file manages app defaults and system settings.            */
+/* -------------------------------------------------------------------------- */
+
 { pkgs, inputs, ... }:
 
-  ###################################################################################
-  #
-  #  macOS's System configuration
-  #
-  #  All the configuration options are documented here:
-  #    https://daiderd.com/nix-darwin/manual/index.html#sec-options
-  #
-  ###################################################################################
 let
   wallpaper-name = "orange-wave.jpg";
 in
@@ -25,14 +21,14 @@ in
 
     defaults = {
       menuExtraClock.ShowSeconds = false;
-      
+
       dock.autohide = true;
       dock.autohide-delay = 0.75;
       dock.autohide-time-modifier = 0.75;
 
       finder.ShowPathbar = true;
-      loginwindow.LoginwindowText = "matteing.com";
 
+      loginwindow.LoginwindowText = "matteing.com";
 
       # Load up my custom iTerm2 preferences.
       CustomUserPreferences = {
