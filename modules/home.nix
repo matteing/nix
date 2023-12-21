@@ -20,8 +20,9 @@
 
   programs.zsh = {
     enable = true;
-    ohMyZshModule = {
+    oh-my-zsh = {
       enable = true;
+      theme = "robbyrussell";
     };
   };
 }
