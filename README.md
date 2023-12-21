@@ -25,7 +25,7 @@ First, start installing the Xcode developer tools by attempting to clone this re
 Next up, install the prerequisites by running:
 
 ```bash
-make fresh-darwin
+make prepare
 ```
 This command will complete the remaining two items to prepare your system for bringup.
 
