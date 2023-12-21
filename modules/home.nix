@@ -40,7 +40,7 @@ in
 
     sessionVariables = {
       ERL_AFLAGS = "-kernel shell_history enabled -kernel shell_history_file_bytes 1024000";
-      KERL_CONFIGURE_OPTIONS="--enable-dynamic-ssl-lib --with-ssl=$(brew --prefix openssl@1.1) --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --disable-debug --without-javac";
+      KERL_CONFIGURE_OPTIONS="--enable-dynamic-ssl-lib --with-ssl=${pkgs.openssl_1_1} --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --disable-debug --without-javac";
     };
 
     initExtra = ''

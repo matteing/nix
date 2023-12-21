@@ -16,6 +16,7 @@
     yt-dlp
     wget
     swift-format
+    openssl_1_1
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
