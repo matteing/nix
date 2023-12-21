@@ -27,6 +27,14 @@ in
       # Just some `defaults` examples...
       # menuExtraClock.ShowSeconds = true;
       # NSGlobalDomain.AppleInterfaceStyle = "Dark";
+      dock.autohide = true;
+
+      CustomSystemPreferences = {
+        "com.apple.dock" = {
+          "autohide-delay" = 0.75;
+          "autohide-time-modifier" = 0.75;
+        };
+      };
 
       # Load up my custom iTerm2 preferences.
       CustomUserPreferences = {
