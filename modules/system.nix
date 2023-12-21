@@ -9,15 +9,14 @@ let
   
   # Dock setup
   apps = [
-    "/Applications/Finder.app" 
-    "/Applications/Launchpad.app"
-    "/Applications/Safari.app"
-    "/Applications/Mail.app"
-    "/Applications/Calendar.app"
+    "/System/Applications/Launchpad.app"
+    "/System/Applications/Safari.app"
+    "/System/Applications/Mail.app"
+    "/System/Applications/Calendar.app"
     "/Applications/Visual\\ Studio\\ Code.app"
     # "/Applications/Things.app"
     # "/Applications/iA Writer.app"
-    "/Applications/Music.app"
+    "/System/Applications/Music.app"
     # "WhatsApp.app"
     "/Applications/iTerm.app"
   ];
