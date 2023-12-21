@@ -8,6 +8,9 @@
   #    https://daiderd.com/nix-darwin/manual/index.html#sec-options
   #
   ###################################################################################
+let
+  wallpaper-name = "orange-wave.jpg";
+in
 {
   system = {
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
@@ -16,7 +19,8 @@
       # so we do not need to logout and login again to make the changes take effect.
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
-      osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/orange-wave.jpg\" as POSIX file"
+      # Set a wallpaper.
+      osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
     '';
 
     defaults = {
