@@ -10,7 +10,7 @@ let
   # Dock setup
   apps = [
     "/System/Applications/Launchpad.app"
-    "/System/Applications/Safari.app"
+    "/Applications/Safari.app"
     "/System/Applications/Mail.app"
     "/System/Applications/Calendar.app"
     "/Applications/Visual\\ Studio\\ Code.app"
