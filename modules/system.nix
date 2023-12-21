@@ -24,9 +24,8 @@ in
     '';
 
     defaults = {
-      # Just some `defaults` examples...
-      # menuExtraClock.ShowSeconds = true;
-      # NSGlobalDomain.AppleInterfaceStyle = "Dark";
+      menuExtraClock.ShowSeconds = false;
+      
       dock.autohide = true;
       dock.autohide-delay = 0.75;
       dock.autohide-time-modifier = 0.75;
