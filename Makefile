@@ -24,7 +24,7 @@ sync:
 	git pull
 	darwin-rebuild switch --flake .#matteing-mbp
 	neofetch
-	echo "%F{green}All done!%f"
+	@echo "\033[32mAll done!\033[0m"
 
 langs:
 	asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
