@@ -23,7 +23,7 @@ let
   ];
 
   dockutil = "${pkgs.dockutil}/bin/dockutil";
-  addApp = app: "${dockutil} --add \"/Applications/${app^}\" --no-restart";
+  addApp = app: "${dockutil} --add \"/Applications/${app}\" --no-restart";
   dockutilCommands = builtins.concatMap (app: [addApp app]) apps;
 in
 {
