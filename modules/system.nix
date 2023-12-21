@@ -6,24 +6,6 @@
 
 let
   wallpaper-name = "orange-wave.jpg";
-  
-  # Dock setup
-  apps = [
-    "/System/Applications/Launchpad.app"
-    "/Applications/Safari.app"
-    "/System/Applications/Mail.app"
-    "/System/Applications/Calendar.app"
-    "/Applications/Visual\\ Studio\\ Code.app"
-    # "/Applications/Things.app"
-    # "/Applications/iA Writer.app"
-    "/System/Applications/Music.app"
-    # "WhatsApp.app"
-    "/Applications/iTerm.app"
-  ];
-
-  makeDockutilCommand = appPath: "${pkgs.dockutil}/bin/dockutil --add ${appPath} --no-restart";
-  dockutilCommands = map makeDockutilCommand apps;
-  dockutilCommandsString = builtins.concatStringsSep "\n" dockutilCommands;
 in
 {
   system = {
@@ -35,11 +17,6 @@ in
 
       # Set a wallpaper.
       osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
-
-      # Set up the dock.
-      ${pkgs.dockutil}/bin/dockutil --remove all --no-restart
-      ${dockutilCommandsString}
-      killall Dock
     '';
 
     defaults = {
