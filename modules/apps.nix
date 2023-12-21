@@ -16,6 +16,7 @@
     yt-dlp
     wget
     swift-format
+    dockutil
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.

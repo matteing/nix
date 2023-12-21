@@ -6,6 +6,25 @@
 
 let
   wallpaper-name = "orange-wave.jpg";
+  
+  # Dock setup
+  apps = [
+    "Finder.app" 
+    "Launchpad.app"
+    "Safari.app"
+    "Mail.app"
+    "Calendar.app"
+    "Visual Studio Code.app"
+    # "Things.app"
+    # "iA Writer.app"
+    "Music.app"
+    # "WhatsApp.app"
+    "iTerm.app"
+  ];
+
+  dockutil = "${pkgs.dockutil}/bin/dockutil";
+  addApp = app: "${dockutil} --add \"/Applications/${app^}\" --no-restart";
+  dockutilCommands = builtins.concatMap (app: [addApp app]) apps;
 in
 {
   system = {
@@ -17,6 +36,9 @@ in
 
       # Set a wallpaper.
       osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
+
+      # Set up the dock.
+      ${dockutilCommands}
     '';
 
     defaults = {
