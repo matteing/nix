@@ -49,6 +49,8 @@
       "wxwidgets"
       # Can't find this in nixpkgs
       "trash"
+      # Faster NPM
+      "pnpm"
     ];
 
     # `brew install --cask`
