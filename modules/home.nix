@@ -41,7 +41,7 @@
       for dir in $append_to_bin; do
         # If path exists...
         if [ -d "$dir" ]; then
-          export PATH="$dir:$PATH"
+          export PATH="$PATH:$dir"
         fi
       done
     '';
