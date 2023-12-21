@@ -31,6 +31,10 @@ in
       dock.autohide-delay = 0.75;
       dock.autohide-time-modifier = 0.75;
 
+      finder.ShowPathbar = true;
+      loginwindow.LoginwindowText = "matteing.com";
+
+
       # Load up my custom iTerm2 preferences.
       CustomUserPreferences = {
         "com.googlecode.iterm2" = {
