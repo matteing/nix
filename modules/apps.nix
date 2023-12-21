@@ -17,6 +17,7 @@
     wget
     swift-format
     openssl
+    openssl.dev
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
