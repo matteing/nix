@@ -9,7 +9,6 @@
   #
   ###################################################################################
 {
-
   system = {
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
     activationScripts.postUserActivation.text = ''
@@ -19,9 +18,11 @@
     '';
 
     defaults = {
+      # Just some `defaults` examples...
       # menuExtraClock.ShowSeconds = true;
       # NSGlobalDomain.AppleInterfaceStyle = "Dark";
 
+      # Load up my custom iTerm2 preferences.
       CustomUserPreferences = {
         "com.googlecode.iterm2" = {
           "PrefsCustomFolder" = "${inputs.self}/iterm";
@@ -31,7 +32,7 @@
     };
   };
 
-  # Add ability to used TouchID for sudo authentication
+  # Allow using Touch ID to authenticate `sudo` requests.
   security.pam.enableSudoTouchIdAuth = true;
 
   time.timeZone = "America/Puerto_Rico";
