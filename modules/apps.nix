@@ -38,7 +38,7 @@
     # `brew install`
     brews = [
       # This is the best optimized version of OpenSSl for macOS.
-      "openssl@3"
+      "openssl@1.1"
       "wxwidgets"
     ];
 
