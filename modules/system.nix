@@ -23,8 +23,8 @@ in
       menuExtraClock.ShowSeconds = false;
 
       dock.autohide = true;
-      dock.autohide-delay = 0.75;
-      dock.autohide-time-modifier = 0.75;
+      dock.autohide-delay = 0.50;
+      dock.autohide-time-modifier = 0.50;
 
       finder.ShowPathbar = true;
 
