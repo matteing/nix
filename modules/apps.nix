@@ -25,7 +25,6 @@
     yt-dlp
     wget
     swift-format
-    # oh-my-zsh
   ];
 
   # 
@@ -81,6 +80,7 @@
       "steam"
       "dash"
       "orbstack"
+      "logi-options-plus"
     ];
 
     # Mac App Store apps.
