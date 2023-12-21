@@ -87,6 +87,7 @@
       "orbstack"
       "logi-options-plus"
       "spotify"
+      "adobe-creative-cloud"
     ];
 
     # Mac App Store apps.
