@@ -22,9 +22,9 @@ let
     "iTerm.app"
   ];
 
-  dockutil = "${pkgs.dockutil}/bin/dockutil";
-  addApp = app: "${dockutil} --add \"/Applications/${app}\" --no-restart";
-  dockutilCommands = builtins.concatMap (app: [addApp app]) apps;
+  makeDockutilCommand = appPath: "dockutil --add ${appPath} --no-restart";
+  dockutilCommands = map makeDockutilCommand apps;
+  dockutilCommandsString = builtins.concatStringsSep "\n" dockutilCommands;
 in
 {
   system = {
