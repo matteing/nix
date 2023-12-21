@@ -5,6 +5,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
@@ -37,7 +39,18 @@
     # $ darwin-rebuild build --flake .#matteing-mbp
     darwinConfigurations."matteing-mbp" = nix-darwin.lib.darwinSystem {
       modules = [ 
+        # Nix configuration
         configuration
+
+        # Set up Home Manager
+        home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.sergio = import ./modules/home.nix;
+          }
+
+        # Custom modules
         ./modules/hostname.nix
         ./modules/system.nix
         ./modules/apps.nix
