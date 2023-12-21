@@ -38,7 +38,7 @@
         "/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin"
       )
 
-      for dir in $directories; do
+      for dir in $append_to_bin; do
         # If path exists...
         if [ -d "$dir" ]; then
           export PATH="$dir:$PATH"
