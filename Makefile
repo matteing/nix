@@ -20,11 +20,15 @@ checkin:
 pull:
 	git pull
 
+checkin-lock:
+	git add flake.lock
+	git commit -m "[checkin] $(current_datetime)"
+	git push
+
 sync:
 	git pull
 	darwin-rebuild switch --flake .#matteing-mbp
 	neofetch
-	@echo "\033[32mAll done!\033[0m"
 
 langs:
 	asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
