@@ -21,9 +21,9 @@
   programs.zsh = {
     enable = true;
 
-    # oh-my-zsh = {
-    #   enable = true;
-    # };
+    oh-my-zsh = {
+      enable = true;
+    };
 
     shellAliases = {
       workon = "cd ~/Projects/$1";
