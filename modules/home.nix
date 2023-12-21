@@ -27,6 +27,7 @@
 
     shellAliases = {
       workon = "cd ~/Projects/$1";
+      django = "python manage.py";
     };
 
     sessionVariables = {
