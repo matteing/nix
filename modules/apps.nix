@@ -39,10 +39,11 @@
 
     # `brew install`
     brews = [
-      # This is the best optimized version of OpenSSl for macOS.
+      # Dependency for building Python.
       "readline"
       "xz"
       "openssl@1.1"
+      # This is the best optimized version of OpenSSl for macOS.
       "wxwidgets"
     ];
 
