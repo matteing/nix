@@ -1,4 +1,4 @@
-.PHONY: fresh-darwin init rebuild checkin pull sync langs extras
+.PHONY: fresh-darwin init rebuild checkin checkin-lock pull sync langs langs extras
 
 current_datetime := $(shell date +"%Y-%m-%d %H:%M:%S")
 
@@ -29,6 +29,11 @@ sync:
 	git pull
 	darwin-rebuild switch --flake .#matteing-mbp
 	neofetch
+
+determinate-fix:
+	sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+	sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
+	sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin
 
 langs:
 	asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
