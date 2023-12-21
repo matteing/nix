@@ -22,9 +22,9 @@
     enable = true;
     oh-my-zsh = {
       enable = true;
-      initExtra = ''
-        ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
-      '';
     };
+    initExtra = ''
+      ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
+    '';
   };
 }
