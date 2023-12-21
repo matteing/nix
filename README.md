@@ -40,3 +40,5 @@ make extras # other random things I use
 
 ## More
 Check the Makefile for more commands you can use!
+
+![hexley!](http://www.hexley.com/images/hexley_450_pngs/hexley_pkg_450.png)
