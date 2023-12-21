@@ -24,7 +24,7 @@
       enable = true;
       initExtra = ''
         ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
-      ''
+      '';
     };
   };
 }
