@@ -26,9 +26,9 @@
     };
 
     shellAliases = {
-      code = "/Applicatons/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code";
+      code = "/Applicatons/Visual Studio Code.app/Contents/Resources/app/bin/code";
       workon = "cd ~/Projects/$1";
-    }
+    };
 
     initExtra = ''
       ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
