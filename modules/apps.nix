@@ -42,8 +42,9 @@
       # Dependency for building Python.
       "readline"
       "xz"
-      "openssl@3"
       # This is the best optimized version of OpenSSl for macOS.
+      "openssl@3"
+      # Erlang's :observer module needs WXWidgets.
       "wxwidgets"
     ];
 
