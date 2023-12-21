@@ -20,9 +20,16 @@
 
   programs.zsh = {
     enable = true;
+
     oh-my-zsh = {
       enable = true;
     };
+
+    shellAliases = {
+      code = "/Applicatons/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code";
+      workon = "cd ~/Projects/$1";
+    }
+
     initExtra = ''
       ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
     '';
