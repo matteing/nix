@@ -22,7 +22,7 @@ let
     "iTerm.app"
   ];
 
-  makeDockutilCommand = appPath: "dockutil --add ${appPath} --no-restart";
+  makeDockutilCommand = appPath: "${pkgs.dockutil}/bin/dockutil --add /Applications/${appPath} --no-restart";
   dockutilCommands = map makeDockutilCommand apps;
   dockutilCommandsString = builtins.concatStringsSep "\n" dockutilCommands;
 in
@@ -38,6 +38,7 @@ in
       osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
 
       # Set up the dock.
+      ${pkgs.dockutil}/bin/dockutil --remove all --no-restart
       ${dockutilCommandsString}
     '';
 
