@@ -17,10 +17,11 @@ in
   system.defaults.smb.NetBIOSName = hostname;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${username}"= {
-    home = "/Users/${username}";
-    description = username;
-  };
+  # I don't need this right now--I'm setting Darwin up for my personal account.
+  # users.users."${username}"= {
+  #   home = "/Users/${username}";
+  #   description = username;
+  # };
 
   nix.settings.trusted-users = [ username ];
 }
