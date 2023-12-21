@@ -35,20 +35,4 @@
   security.pam.enableSudoTouchIdAuth = true;
 
   time.timeZone = "America/Puerto_Rico";
-
-  # Create /etc/zshrc that loads the nix-darwin environment.
-  # this is required if you want to use darwin's default shell - zsh
-  # programs.zsh = {
-  #   enable = true;
-  #   interactiveShellInit = ''
-  #     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh";
-  #     source $ZSH/oh-my-zsh.sh;
-  #     ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
-  #   '';
-  #   promptInit = "";
-  # };
-
-  # environment.shellAliases = {
-  #   workon = "cd ~/Projects/$1";
-  # };
 }
