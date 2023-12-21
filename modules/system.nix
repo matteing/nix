@@ -9,20 +9,20 @@ let
   
   # Dock setup
   apps = [
-    "Finder.app" 
-    "Launchpad.app"
-    "Safari.app"
-    "Mail.app"
-    "Calendar.app"
-    "Visual\\ Studio\\ Code.app"
-    # "Things.app"
-    # "iA Writer.app"
-    "Music.app"
+    "/Applications/Finder.app" 
+    "/Applications/Launchpad.app"
+    "/Applications/Safari.app"
+    "/Applications/Mail.app"
+    "/Applications/Calendar.app"
+    "/Applications/Visual\\ Studio\\ Code.app"
+    # "/Applications/Things.app"
+    # "/Applications/iA Writer.app"
+    "/Applications/Music.app"
     # "WhatsApp.app"
-    "iTerm.app"
+    "/Applications/iTerm.app"
   ];
 
-  makeDockutilCommand = appPath: "${pkgs.dockutil}/bin/dockutil --add /Applications/${appPath} --no-restart";
+  makeDockutilCommand = appPath: "${pkgs.dockutil}/bin/dockutil --add ${appPath} --no-restart";
   dockutilCommands = map makeDockutilCommand apps;
   dockutilCommandsString = builtins.concatStringsSep "\n" dockutilCommands;
 in
@@ -38,9 +38,9 @@ in
       osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
 
       # Set up the dock.
-      # ${pkgs.dockutil}/bin/dockutil --remove all --no-restart
-      # ${dockutilCommandsString}
-      # killall Dock
+      ${pkgs.dockutil}/bin/dockutil --remove all --no-restart
+      ${dockutilCommandsString}
+      killall Dock
     '';
 
     defaults = {
