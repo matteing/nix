@@ -6,12 +6,12 @@
 #### What's here?
 I've aimed to create a minimal, pragmatic setup for my machine using Nix. I won't go too off the deep-end here, but will try some Nix features to simplify my development environment.
 
-1. Declarative application management
-2. Flake-based configuration (nix-darwin)
-3. iTerm2 settings support
-4. Home Manager for setting up my Zsh environment 
-5. `asdf` for language management
-6. Other niceties ✨
+- Declarative application management
+- Flake-based configuration (nix-darwin)
+- iTerm2 settings support
+- Home Manager for setting up my Zsh environment 
+- `asdf` for language management
+- Other niceties ✨
 
 ## Prerequisites
 To bring a device up into this repository, you must:
