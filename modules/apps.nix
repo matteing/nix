@@ -95,21 +95,21 @@
 
     # Mac App Store apps.
     masApps = {
-      Things = "904280696";
-      "iA Writer" = "775737590";
-      Wipr = "1320666476";
-      Xcode = "497799835";
-      Tailscale = "1475387142";
-      Amphetamine = "937984704";
-      WhatsApp = "310633997";
-      Unarchiver = "425424353";
-      Vinegar = "1591303229";
-      TestFlight = "899247664";
-      "1Password for Safari" = "1569813296";
-      Gifski = "1351639930";
-      iMovie = "408981434";
-      Telegram = "747648890";
-      "Little Snitch Mini" = "1629008763";
+      Things = 904280696;
+      "iA Writer" = 775737590;
+      Wipr = 1320666476;
+      Xcode = 497799835;
+      Tailscale = 1475387142;
+      Amphetamine = 937984704;
+      WhatsApp = 310633997;
+      Unarchiver = 425424353;
+      Vinegar = 1591303229;
+      TestFlight = 899247664;
+      "1Password for Safari" = 1569813296;
+      Gifski = 1351639930;
+      iMovie = 408981434;
+      Telegram = 747648890;
+      "Little Snitch Mini" = 1629008763;
     };
   };
 }
