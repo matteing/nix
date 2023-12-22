@@ -90,10 +90,12 @@
       "spotify"
       "adobe-creative-cloud"
       "streamlabs"
+      "coconutbattery"
     ];
 
     # Mac App Store apps.
     masApps = [
+      # 2FA app must be installed manually.
       "904280696" # Things
       "775737590" # iA Writer
       "1320666476" # Wipr
