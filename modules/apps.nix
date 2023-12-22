@@ -89,24 +89,26 @@
       "logi-options-plus"
       "spotify"
       "adobe-creative-cloud"
+      "streamlabs"
     ];
 
     # Mac App Store apps.
-    # masApps = [
-    #   "904280696" # Things
-    #   "775737590" # iA Writer
-    #   "1320666476" # Wipr
-    #   "497799835" # Xcode
-    #   "1475387142" # Tailscale
-    #   "937984704" # Amphetamine
-    #   "310633997" # WhatsApp
-    #   "425424353" # Unarchiver
-    #   "1591303229" # Vinegar
-    #   "899247664" # TestFlight
-    #   "1569813296" # 1Password for Safari
-    #   "1351639930" # Gifski
-    #   "408981434" # iMovie
-    #   "747648890" # Telegram
-    # ]
+    masApps = [
+      "904280696" # Things
+      "775737590" # iA Writer
+      "1320666476" # Wipr
+      "497799835" # Xcode
+      "1475387142" # Tailscale
+      "937984704" # Amphetamine
+      "310633997" # WhatsApp
+      "425424353" # Unarchiver
+      "1591303229" # Vinegar
+      "899247664" # TestFlight
+      "1569813296" # 1Password for Safari
+      "1351639930" # Gifski
+      "408981434" # iMovie
+      "747648890" # Telegram
+      "1629008763" # Little Snitch Mini
+    ]
   };
 }
