@@ -94,23 +94,22 @@
     ];
 
     # Mac App Store apps.
-    masApps = [
-      # 2FA app must be installed manually.
-      "904280696" # Things
-      "775737590" # iA Writer
-      "1320666476" # Wipr
-      "497799835" # Xcode
-      "1475387142" # Tailscale
-      "937984704" # Amphetamine
-      "310633997" # WhatsApp
-      "425424353" # Unarchiver
-      "1591303229" # Vinegar
-      "899247664" # TestFlight
-      "1569813296" # 1Password for Safari
-      "1351639930" # Gifski
-      "408981434" # iMovie
-      "747648890" # Telegram
-      "1629008763" # Little Snitch Mini
-    ];
+    masApps = {
+      Things = "904280696";
+      "iA Writer" = "775737590";
+      Wipr = "1320666476";
+      Xcode = "497799835";
+      Tailscale = "1475387142";
+      Amphetamine = "937984704";
+      WhatsApp = "310633997";
+      Unarchiver = "425424353";
+      Vinegar = "1591303229";
+      TestFlight = "899247664";
+      "1Password for Safari" = "1569813296";
+      Gifski = "1351639930";
+      iMovie = "408981434";
+      Telegram = "747648890";
+      "Little Snitch Mini" = "1629008763";
+    };
   };
 }
