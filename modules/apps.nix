@@ -18,6 +18,7 @@
     swift-format
     dockutil
     poetry
+    nano
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.

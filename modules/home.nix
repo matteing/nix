@@ -39,6 +39,7 @@ in
     };
 
     sessionVariables = {
+      EDITOR = "nano";
       ERL_AFLAGS = "-kernel shell_history enabled -kernel shell_history_file_bytes 1024000";
       KERL_CONFIGURE_OPTIONS="--enable-dynamic-ssl-lib --with-ssl=/opt/homebrew/opt/openssl@3 --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --disable-debug --without-javac";
     };
