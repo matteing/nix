@@ -111,6 +111,6 @@
       "408981434" # iMovie
       "747648890" # Telegram
       "1629008763" # Little Snitch Mini
-    ]
+    ];
   };
 }
