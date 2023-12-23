@@ -43,6 +43,12 @@ in
         "pro.writer.mac" = {
           "Document Path Extension" = "md";
         };
+
+        # Set some basic options for Rectangle.
+        "com.knollsoft.Rectangle" = {
+          "gapSize" = 16;
+          "launchOnLogin" = true;
+        };
       };
     };
   };
