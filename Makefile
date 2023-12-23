@@ -50,5 +50,5 @@ langs:
 	asdf global python latest
 
 extras:
-	touch ~/Projects
+	mkdir -p ~/Projects
 	touch ~/.hushlogin

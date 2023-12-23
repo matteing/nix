@@ -32,6 +32,8 @@ in
 
       # Load up my custom iTerm2 preferences.
       CustomUserPreferences = {
+        # You can find new user preferences by running `defaults read <app bundle name here>`.
+
         "com.googlecode.iterm2" = {
           "PrefsCustomFolder" = "${inputs.self}/iterm";
           "LoadPrefsFromCustomFolder" = true;
