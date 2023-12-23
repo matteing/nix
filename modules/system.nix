@@ -16,7 +16,7 @@ in
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
       # Set a wallpaper.
-      osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
+      # osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${inputs.self}/wallpapers/${wallpaper-name}\" as POSIX file"
     '';
 
     defaults = {
