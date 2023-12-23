@@ -36,6 +36,11 @@ in
           "PrefsCustomFolder" = "${inputs.self}/iterm";
           "LoadPrefsFromCustomFolder" = true;
         };
+
+        # Set some basic options for iA Writer.
+        "pro.writer.mac" = {
+          "Document Path Extension" = "md";
+        };
       };
     };
   };
