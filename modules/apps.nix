@@ -19,6 +19,8 @@
     dockutil
     poetry
     nano
+    fortune
+    lolcat
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.

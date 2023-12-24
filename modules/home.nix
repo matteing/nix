@@ -74,6 +74,10 @@ in
 
       # Initialize the asdf version manager.
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
+
+      # Do something fun
+      FORTUNE_COMMAND="${pkgs.fortune}/bin/fortune -s art computers education food linux literature politics tao wisdom science"
+      eval "$FORTUNE_COMMAND" | ${pkgs.lolcat}/bin/lolcat
     '';
   };
 }
