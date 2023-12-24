@@ -21,6 +21,7 @@
     nano
     fortune
     lolcat
+    nodePackages_latest.pnpm
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
@@ -52,8 +53,6 @@
       "wxwidgets"
       # Can't find this in nixpkgs
       "trash"
-      # Faster NPM
-      "pnpm"
     ];
 
     # `brew install --cask`
