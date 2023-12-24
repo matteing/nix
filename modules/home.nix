@@ -51,6 +51,11 @@ in
       # Disable the right-hand side prompt (unsure why it's even set at all?)
       export RPROMPT=""
 
+      # Set that prompt iff we're in a Nix or virtualenv subshell
+      if [ $SHLVL -gt 1 ]; then
+        RPROMPT="%F{green}(in subshell)%f"
+      fi
+
       # Initialize Brew.
       eval "$(/opt/homebrew/bin/brew shellenv)"
 
