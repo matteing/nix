@@ -31,6 +31,9 @@ in
 
     oh-my-zsh = {
       enable = true;
+      plugins = [
+        "z"
+      ];
     };
 
     shellAliases = {

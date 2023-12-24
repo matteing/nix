@@ -22,6 +22,7 @@
     fortune
     lolcat
     nodePackages_latest.pnpm
+    jq
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
