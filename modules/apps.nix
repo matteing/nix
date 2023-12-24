@@ -43,7 +43,7 @@
 
     # `brew install`
     brews = [
-      # Dependency for building Python.
+      # Dependencies for building Python.
       "readline"
       "xz"
       # This is the best optimized version of OpenSSl for macOS.
