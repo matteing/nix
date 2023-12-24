@@ -30,6 +30,16 @@ in
 
       loginwindow.LoginwindowText = "matteing.com";
 
+      # Set the default language to English (US) and Spanish (US).
+      # CustomSystemPreferences = {
+      #  NSGlobalDomain = {
+      #     AppleLanguages = [
+      #       "en-US"
+      #       "es-US"
+      #     ];
+      #  };
+      # };
+
       # Load up my custom iTerm2 preferences.
       CustomUserPreferences = {
         # You can find new user preferences by running `defaults read <app bundle name here>`.

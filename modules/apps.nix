@@ -76,7 +76,7 @@
       "sublime-text"
       # Uhhh, this is the only version of TablePlus that I have a key for
       # 5.9.0,490
-      "https://raw.githubusercontent.com/Homebrew/homebrew-cask/581d8845ef4ed6d731b547bb152486f97ce7e34e/Casks/tableplus.rb"
+      # "https://raw.githubusercontent.com/Homebrew/homebrew-cask/581d8845ef4ed6d731b547bb152486f97ce7e34e/Casks/tableplus.rb"
       "transmission"
       "utm"
       "raycast"
