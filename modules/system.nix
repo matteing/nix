@@ -5,7 +5,7 @@
 { pkgs, inputs, ... }:
 
 let
-  wallpaper-name = "orange-wave.jpg";
+  wallpaper-name = "miata1.jpg";
 in
 {
   system = {

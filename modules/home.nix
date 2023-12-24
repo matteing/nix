@@ -51,6 +51,9 @@ in
       # Disable the right-hand side prompt (unsure why it's even set at all?)
       export RPROMPT=""
 
+      # Initialize Brew.
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+
       # Initialize applications that package optional CLI utilities.
       append_to_bin=(
         "/Applications/Postgres.app/Contents/Versions/latest/bin"
