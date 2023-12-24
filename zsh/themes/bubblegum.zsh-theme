@@ -1,5 +1,5 @@
 if [ $SHLVL -gt 1 ]; then
-  PROMPT="%F{green}(in subshell) %{$fg_bold[magenta]%}▲ $(get_pwd) %{$reset_color%}"
+  PROMPT='%F{green}(in subshell) %{$fg_bold[magenta]%}▲ $(get_pwd) %{$reset_color%}'
 else
   PROMPT='%{$fg_bold[magenta]%}▲ $(get_pwd) %{$reset_color%}'
 fi
