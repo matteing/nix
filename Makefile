@@ -11,6 +11,7 @@ init:
 
 rebuild:
 	darwin-rebuild switch --flake .#matteing-mbp
+	neofetch
 
 checkin:
 	git add .
