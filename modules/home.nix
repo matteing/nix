@@ -72,8 +72,10 @@ in
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
 
       # Do something fun
-      FORTUNE_COMMAND="${pkgs.fortune}/bin/fortune -s art computers education food linux literature politics tao wisdom science"
-      eval "$FORTUNE_COMMAND" | ${pkgs.lolcat}/bin/lolcat
+      if [ $SHLVL -eq 1 ]; then
+        FORTUNE_COMMAND="${pkgs.fortune}/bin/fortune -s art computers education food linux literature politics tao wisdom science"
+        eval "$FORTUNE_COMMAND" | ${pkgs.lolcat}/bin/lolcat
+      fi
     '';
   };
 }
