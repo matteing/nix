@@ -23,6 +23,7 @@
     lolcat
     nodePackages_latest.pnpm
     jq
+    unixtools.watch
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
