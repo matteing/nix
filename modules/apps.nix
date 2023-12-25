@@ -24,6 +24,7 @@
     nodePackages_latest.pnpm
     jq
     unixtools.watch
+    htop
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
