@@ -39,6 +39,7 @@ in
     shellAliases = {
       workon = "cd ~/Projects/$1";
       django = "python manage.py";
+      fly-proxy-db = "flyctl proxy 15432:5432 -s -a";
     };
 
     sessionVariables = {
