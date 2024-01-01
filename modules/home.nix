@@ -41,6 +41,7 @@ in
       django = "python manage.py";
       fly-proxy-db = "flyctl proxy 15432:5432 -s -a";
       npm = "pnpm";
+      actually-npm = "npm";
     };
 
     sessionVariables = {
