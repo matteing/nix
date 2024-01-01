@@ -22,9 +22,9 @@ in
     defaults = {
       menuExtraClock.ShowSeconds = false;
 
-      dock.autohide = true;
-      dock.autohide-delay = 0.50;
-      dock.autohide-time-modifier = 0.50;
+      dock.autohide = false;
+      # dock.autohide-delay = 0.50;
+      # dock.autohide-time-modifier = 0.50;
 
       finder.ShowPathbar = true;
 
@@ -52,6 +52,7 @@ in
         # Set some basic options for iA Writer.
         "pro.writer.mac" = {
           "Document Path Extension" = "md";
+          "File Extension Visibility" = false;
         };
 
         # Set some basic options for Rectangle.
