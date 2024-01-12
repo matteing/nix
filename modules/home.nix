@@ -26,6 +26,16 @@ in
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  programs.git = {
+    enable = true;
+    userName = "Sergio Mattei";
+    extraConfig = {
+      init = {
+        defaultBranch = "main";
+      };
+    };
+  };
+
   programs.zsh = {
     enable = true;
 
