@@ -21,7 +21,7 @@
     nano
     fortune
     lolcat
-    nodePackages_latest.pnpm
+    # nodePackages_latest.pnpm
     jq
     unixtools.watch
     htop
@@ -56,6 +56,8 @@
       "wxwidgets"
       # Can't find this in nixpkgs
       "trash"
+      # Nixpkgs version is outdated and no upgrade path
+      "pnpm"
     ];
 
     # `brew install --cask`
