@@ -118,6 +118,10 @@
       iMovie = 408981434;
       Telegram = 747648890;
       "Little Snitch Mini" = 1629008763;
+      "Save to Pocket" = 1477385213;
+      "Numbers" = 409203825;
+      "Pages" = 409201541;
+      "Keynote" = 409183694;
     };
   };
 }
