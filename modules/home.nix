@@ -26,6 +26,14 @@ in
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  # Set up useful symlinks.
+  # https://www.reddit.com/r/NixOS/comments/u09cz9/home_manager_create_my_own_symlinks_automatically/
+  home.file = {
+    "iCloud" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/Users/${username}/Library/Mobile Documents/com~apple~CloudDocs";
+    };
+  };
+
   programs.git = {
     enable = true;
     userName = "Sergio Mattei";
@@ -52,6 +60,9 @@ in
       fly-proxy-db = "flyctl proxy 15432:5432 -s -a";
       npm = "pnpm";
       actually-npm = "npm";
+      create-daily-note = "python3 ~/iCloud/Notes/Management/create-daily-note.py";
+      daily = "create-daily-note";
+      today = "create-daily-note";
     };
 
     sessionVariables = {
