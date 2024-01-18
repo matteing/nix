@@ -6,6 +6,9 @@
 
 let 
   username = "sergio";
+
+  # Depends on the symlink in "home.file".
+  notesPath = "~/iCloud/Notes";
 in
 {
   # Home Manager needs a bit of information about you and the
@@ -60,9 +63,15 @@ in
       fly-proxy-db = "flyctl proxy 15432:5432 -s -a";
       npm = "pnpm";
       actually-npm = "npm";
-      create-daily-note = "python3 ~/iCloud/Notes/Management/create-daily-note.py";
+
+      # Opinionated note management
+      create-daily-note = "python3 ${notesPath}/Management/create-daily-note.py";
       daily = "create-daily-note";
       today = "create-daily-note";
+      tomorrow = "create-daily-note --tomorrow";
+      note = "open 'ia-writer://new?path=${notesPath}/Inbox'";
+      clip = "open 'ia-writer://new?path=${notesPath}/Clippings'";
+      autoindex = "python3 ${notesPath}/Management/run-autoindex.py ${notesPath}";
     };
 
     sessionVariables = {
