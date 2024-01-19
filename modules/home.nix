@@ -6,6 +6,7 @@
 
 let 
   username = "sergio";
+  zshTheme = "minimal_improved";
 
   # Depends on the symlink in "home.file".
   notesPath = "~/iCloud/Notes";
@@ -47,17 +48,36 @@ in
     };
   };
 
+  # Before installing things to systemPackages, check if they're
+  # home-manager compatible. If they are, opt for that, as the configuration is 
+  # automatically cross-platform and installed to home instead.
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs.zsh = {
     enable = true;
 
     oh-my-zsh = {
       enable = true;
-      plugins = [
-        "z"
-      ];
+      plugins = [ "git" ];
     };
 
+    enableAutosuggestions = true;
+    syntaxHighlighting.enable = true;
+
     shellAliases = {
+      # General
+      home = "cd ~";
+      rebuild = "cd ~/nix; make rebuild";
+
+      # Projects
       workon = "cd ~/Projects/$1";
       django = "python manage.py";
       fly-proxy-db = "flyctl proxy 15432:5432 -s -a";
@@ -83,10 +103,10 @@ in
     };
 
     initExtra = ''
-      ${(builtins.readFile ../zsh/themes/bubblegum.zsh-theme)}
+      ${(builtins.readFile ../zsh/themes/${zshTheme}.zsh-theme)}
 
       # Disable the right-hand side prompt (unsure why it's even set at all?)
-      export RPROMPT=""
+      # export RPROMPT=""
 
       # Initialize Brew.
       eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -106,12 +126,6 @@ in
 
       # Initialize the asdf version manager.
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
-
-      # Do something fun
-      if [ $SHLVL -eq 1 ]; then
-        FORTUNE_COMMAND="${pkgs.fortune}/bin/fortune -s art computers education food linux literature politics tao wisdom science"
-        eval "$FORTUNE_COMMAND" | ${pkgs.lolcat}/bin/lolcat
-      fi
     '';
   };
 }

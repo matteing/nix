@@ -21,7 +21,6 @@
     nano
     fortune
     lolcat
-    # nodePackages_latest.pnpm
     jq
     unixtools.watch
     htop
@@ -122,6 +121,7 @@
       "Numbers" = 409203825;
       "Pages" = 409201541;
       "Keynote" = 409183694;
+      "FoodNoms" = 1479461686;
     };
   };
 }
