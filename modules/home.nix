@@ -64,13 +64,13 @@ in
   programs.zsh = {
     enable = true;
 
+    enableAutosuggestions = true;
+    syntaxHighlighting.enable = true;
+
     oh-my-zsh = {
       enable = true;
       plugins = [ "git" ];
     };
-
-    enableAutosuggestions = true;
-    syntaxHighlighting.enable = true;
 
     shellAliases = {
       # General
@@ -86,6 +86,7 @@ in
 
       # Opinionated note management
       create-daily-note = "python3 ${notesPath}/Management/create-daily-note.py";
+      collect-attachments = "python3 ${notesPath}/Management/collect-attachments.py";
       daily = "create-daily-note";
       today = "create-daily-note";
       tomorrow = "create-daily-note --tomorrow";
