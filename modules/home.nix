@@ -86,6 +86,7 @@ in
 
       # Opinionated note management
       create-daily-note = "python3 ${notesPath}/Management/create-daily-note.py";
+      create-topic-note = "python3 ${notesPath}/Management/create-topic-note.py";
       collect-attachments = "python3 ${notesPath}/Management/collect-attachments.py";
       daily = "create-daily-note";
       today = "create-daily-note";
