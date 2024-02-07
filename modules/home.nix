@@ -85,15 +85,13 @@ in
       actually-npm = "npm";
 
       # Opinionated note management
-      create-daily-note = "python3 ${notesPath}/Management/create-daily-note.py";
-      create-topic-note = "python3 ${notesPath}/Management/create-topic-note.py";
-      collect-attachments = "python3 ${notesPath}/Management/collect-attachments.py";
-      daily = "create-daily-note";
-      today = "create-daily-note";
-      tomorrow = "create-daily-note --tomorrow";
+      topic = "notectl topic new";
+      daily = "notectl daily today";
+      tomorrow = "notectl daily tomorrow";
+      autoindex = "notectl autoindex run";
+      collect-attachments = "notectl attachments tidy";
       note = "open 'ia-writer://new?path=${notesPath}/Inbox'";
       clip = "open 'ia-writer://new?path=${notesPath}/Clippings'";
-      autoindex = "python3 ${notesPath}/Management/run-autoindex.py ${notesPath}";
     };
 
     sessionVariables = {
