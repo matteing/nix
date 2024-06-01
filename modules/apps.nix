@@ -98,6 +98,7 @@
       "adobe-creative-cloud"
       "streamlabs"
       "coconutbattery"
+      "handbrake"
     ];
 
     # Mac App Store apps.

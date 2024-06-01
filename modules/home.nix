@@ -10,6 +10,7 @@ let
 
   # Depends on the symlink in "home.file".
   notesPath = "~/iCloud/Notes";
+  notectlBin = "/Users/sergio/Library/Caches/pypoetry/virtualenvs/notectl-qXKrSWJo-py3.11/bin/notectl";
 in
 {
   # Home Manager needs a bit of information about you and the
@@ -85,11 +86,13 @@ in
       actually-npm = "npm";
 
       # Opinionated note management
-      topic = "notectl topic new";
-      daily = "notectl daily today";
-      tomorrow = "notectl daily tomorrow";
-      autoindex = "notectl autoindex run";
-      collect-attachments = "notectl attachments tidy";
+      notectl = "${notectlBin}";
+      topic = "${notectlBin} topic new";
+      today = "${notectlBin} daily today";
+      daily = "${notectlBin} daily today";
+      tomorrow = "${notectlBin} daily tomorrow";
+      autoindex = "${notectlBin} autoindex run";
+      collect-attachments = "${notectlBin} attachments tidy";
       note = "open 'ia-writer://new?path=${notesPath}/Inbox'";
       clip = "open 'ia-writer://new?path=${notesPath}/Clippings'";
     };
