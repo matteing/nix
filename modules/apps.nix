@@ -18,6 +18,7 @@
     swift-format
     dockutil
     poetry
+    pdm
     nano
     fortune
     lolcat
