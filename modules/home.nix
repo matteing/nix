@@ -88,7 +88,7 @@ in
       npm = "pnpm";
       actually-npm = "npm";
       # Run redis with daemonize = no
-      redis = "redis-server &";
+      redis = "redis-server --save "" --appendonly no";
 
       # Opinionated note management
       notectl = "${notectlBin}";
