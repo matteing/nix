@@ -87,6 +87,8 @@ in
       fly-proxy-db = "flyctl proxy 15432:5432 -s -a";
       npm = "pnpm";
       actually-npm = "npm";
+      # Run redis with daemonize = no
+      redis = "redis-server &";
 
       # Opinionated note management
       notectl = "${notectlBin}";
