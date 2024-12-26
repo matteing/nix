@@ -94,7 +94,7 @@
       "steam"
       "dash"
       "orbstack"
-      "logi-options-plus"
+      "logi-options+"
       "spotify"
       "adobe-creative-cloud"
       "streamlabs"
