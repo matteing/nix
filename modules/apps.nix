@@ -100,6 +100,8 @@
       "streamlabs"
       "coconutbattery"
       "handbrake"
+      # minecraft
+      "curseforge"
     ];
 
     # Mac App Store apps.
@@ -117,7 +119,7 @@
       # "1Password for Safari" = 1569813296;
       Gifski = 1351639930;
       iMovie = 408981434;
-      Telegram = 747648890;
+      # Telegram = 747648890;
       # "Little Snitch Mini" = 1629008763;
       # "Save to Pocket" = 1477385213;
       "Numbers" = 409203825;
