@@ -34,7 +34,7 @@
 
     onActivation = {
       # 'zap': uninstalls all formulae(and related files) not listed here.
-      cleanup = "uninstall";
+      cleanup = "zap";
       upgrade = true;
     };
 
@@ -102,6 +102,8 @@
       "handbrake"
       # minecraft
       "curseforge"
+      # markdown preview in finder
+      "qlmarkdown"
     ];
 
     # Mac App Store apps.
