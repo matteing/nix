@@ -110,6 +110,7 @@
     masApps = {
       # Things = 904280696;
       "iA Writer" = 775737590;
+      Bear = 1091189122;
       Wipr = 1320666476;
       Xcode = 497799835;
       Tailscale = 1475387142;
