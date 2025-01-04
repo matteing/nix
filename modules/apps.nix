@@ -26,7 +26,6 @@
     unixtools.watch
     htop
     redis
-    uv
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
@@ -59,6 +58,8 @@
       "trash"
       # Nixpkgs version is outdated and no upgrade path
       "pnpm"
+      # old as fuck on Nixpkgs
+      "uv"
     ];
 
     # `brew install --cask`
