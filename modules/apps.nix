@@ -26,6 +26,7 @@
     unixtools.watch
     htop
     redis
+    uv
   ];
 
   # Homebrew is the best option for some packages, especially GUI apps.
