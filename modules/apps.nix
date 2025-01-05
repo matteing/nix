@@ -106,6 +106,8 @@
       "curseforge"
       # markdown preview in finder
       "qlmarkdown"
+      # etcher
+      "balenaetcher"
     ];
 
     # Mac App Store apps.
