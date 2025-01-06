@@ -109,6 +109,8 @@
       "qlmarkdown"
       # etcher
       "balenaetcher"
+      # chrome
+      "google-chrome"
     ];
 
     # Mac App Store apps.
