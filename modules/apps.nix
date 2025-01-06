@@ -59,6 +59,8 @@
       "pnpm"
       # old as fuck on Nixpkgs
       "uv"
+      # fly is more up to date
+      "flyctl"
     ];
 
     # `brew install --cask`
@@ -107,8 +109,6 @@
       "qlmarkdown"
       # etcher
       "balenaetcher"
-      # fly is more up to date
-      "flyctl"
     ];
 
     # Mac App Store apps.
