@@ -9,7 +9,6 @@
   environment.systemPackages = with pkgs; [
     git
     asdf-vm
-    flyctl
     neofetch
     mas
     pipx
@@ -108,6 +107,8 @@
       "qlmarkdown"
       # etcher
       "balenaetcher"
+      # fly is more up to date
+      "flyctl"
     ];
 
     # Mac App Store apps.
