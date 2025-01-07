@@ -67,5 +67,6 @@ in
   # Allow using Touch ID to authenticate `sudo` requests.
   security.pam.enableSudoTouchIdAuth = true;
 
-  time.timeZone = "America/Puerto_Rico";
+  # Let the system detect this -- I travel a lot!
+  # time.timeZone = "America/Puerto_Rico";
 }

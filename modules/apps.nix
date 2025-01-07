@@ -8,7 +8,6 @@
   # Packages to be installed from Nixpkgs.
   environment.systemPackages = with pkgs; [
     git
-    asdf-vm
     neofetch
     mas
     pipx
@@ -61,6 +60,8 @@
       "uv"
       # fly is more up to date
       "flyctl"
+      # fucking nix pkgs can go to hell
+      "asdf"
     ];
 
     # `brew install --cask`
