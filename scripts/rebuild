@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+readonly ACTION="${1:-switch}"
+readonly HOST="${HOST:-$(hostname -s)}"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly REPO_ROOT
+readonly FLAKE="path:$REPO_ROOT#$HOST"
+
+case "$ACTION" in
+  build | test | switch | eval) ;;
+  *)
+    printf 'Usage: %s {build|test|switch|eval}\n' "$0" >&2
+    exit 2
+    ;;
+esac
+
+"$REPO_ROOT/scripts/private-config" ensure "$HOST"
+
+if [[ "$ACTION" == "eval" ]]; then
+  platform="$(nix eval --raw --file "$REPO_ROOT/inventory.nix" "hosts.$HOST.platform")"
+  case "$platform" in
+    darwin) output="darwinConfigurations.$HOST.system.drvPath" ;;
+    nixos) output="nixosConfigurations.$HOST.config.system.build.toplevel.drvPath" ;;
+    *) printf 'Unsupported host platform: %s\n' "$platform" >&2; exit 1 ;;
+  esac
+  nix eval --raw "path:$REPO_ROOT#$output"
+  printf '\n'
+  exit 0
+fi
+
+case "$(uname -s)" in
+  Darwin)
+    case "$ACTION" in
+      build)
+        darwin-rebuild build --flake "$FLAKE"
+        ;;
+      test)
+        darwin-rebuild check --flake "$FLAKE"
+        ;;
+      switch)
+        sudo darwin-rebuild switch --flake "$FLAKE"
+        if command -v fastfetch >/dev/null; then
+          fastfetch
+        fi
+        ;;
+    esac
+    ;;
+
+  Linux)
+    case "$ACTION" in
+      build)
+        nixos-rebuild build --flake "$FLAKE"
+        ;;
+      test)
+        sudo nixos-rebuild test --flake "$FLAKE"
+        ;;
+      switch)
+        sudo nixos-rebuild switch --flake "$FLAKE"
+        ;;
+    esac
+    ;;
+
+  *)
+    printf 'Unsupported operating system: %s\n' "$(uname -s)" >&2
+    exit 1
+    ;;
+esac

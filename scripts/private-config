@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+umask 077
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+readonly REPO_ROOT
+readonly ACTION="${1:-ensure}"
+readonly TARGET_HOST="${2:-matteing-mbp}"
+scratch=""
+
+fail() {
+  printf 'Private config (%s): %s\n' "$TARGET_HOST" "$*" >&2
+  exit 1
+}
+
+case "$ACTION" in
+  encrypt | unlock | ensure) ;;
+  *)
+    printf 'Usage: %s {encrypt|unlock|ensure} [host]\n' "$0" >&2
+    exit 2
+    ;;
+esac
+[[ $# -le 2 ]] || fail "Expected an action and optional host."
+case "$TARGET_HOST" in
+  matteing-mbp) prefix="apps" ;;
+  homelab) prefix="network" ;;
+  *) fail "Unknown host: $TARGET_HOST. Expected matteing-mbp or homelab." ;;
+esac
+readonly PRIVATE_DIR="$REPO_ROOT/hosts/$TARGET_HOST"
+readonly PLAINTEXT="$PRIVATE_DIR/$prefix.local.nix"
+readonly CIPHERTEXT="$PRIVATE_DIR/$prefix.nix.age"
+readonly STATE="$PRIVATE_DIR/$prefix.local.state"
+readonly UNLOCK_COMMAND="make private-unlock HOST=$TARGET_HOST"
+readonly ENCRYPT_COMMAND="make private-encrypt HOST=$TARGET_HOST"
+
+cleanup() {
+  if [[ -n "$scratch" ]]; then
+    rm -f -- "$scratch/content" "$scratch/state" "$scratch/input"
+    rmdir -- "$scratch"
+  fi
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+digest() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1"
+  else
+    shasum -a 256 "$1"
+  fi | awk '{ print $1 }'
+}
+
+run_age() {
+  if command -v age >/dev/null 2>&1; then
+    age "$@"
+  else
+    "${NIX_BIN:-nix}" run --no-write-lock-file "path:$REPO_ROOT#age" -- "$@"
+  fi
+}
+
+read_state() {
+  [[ -f "$STATE" ]] || fail "Missing $prefix.local.state. Move $prefix.local.nix outside the repo, then run '$UNLOCK_COMMAND' before merging your edits."
+  read -r saved_cipher saved_plain < "$STATE" || fail "Cannot read local state."
+  [[ "$saved_cipher" =~ ^[0-9a-f]{64}$ && "$saved_plain" =~ ^[0-9a-f]{64}$ ]] || fail "Invalid $prefix.local.state; move $prefix.local.nix and $prefix.local.state outside the repo, then run '$UNLOCK_COMMAND'."
+}
+
+decrypt() {
+  local identity="${PRIVATE_IDENTITY:-${APPS_IDENTITY:-$HOME/.ssh/matteing-2026}}"
+  [[ -f "$identity" ]] || fail "Identity file missing: $identity. Set PRIVATE_IDENTITY (or APPS_IDENTITY) to the matching private key outside the repository."
+  identity="$(realpath "$identity")"
+  case "$identity" in
+    "$REPO_ROOT"/* | /nix/store/*)
+      fail "The identity must be outside the repository and /nix/store. path: flakes copy their directory into the store."
+      ;;
+  esac
+
+  scratch="$(mktemp -d "$PRIVATE_DIR/.$prefix-tmp.XXXXXX")"
+  cp -- "$CIPHERTEXT" "$scratch/input"
+  run_age --decrypt --identity "$identity" --output "$scratch/content" "$scratch/input" || fail "Decryption failed; existing files were preserved."
+  [[ -s "$scratch/content" ]] || fail "Decrypted $prefix.local.nix is empty."
+  chmod 600 "$scratch/content"
+  printf '%s %s\n' "$(digest "$scratch/input")" "$(digest "$scratch/content")" > "$scratch/state"
+  mv -f -- "$scratch/content" "$PLAINTEXT"
+  mv -f -- "$scratch/state" "$STATE"
+  printf 'Private config (%s): unlocked hosts/%s/%s.local.nix\n' "$TARGET_HOST" "$TARGET_HOST" "$prefix"
+}
+
+# Never follow an output symlink, including a dangling one.
+for output in "$PLAINTEXT" "$CIPHERTEXT" "$STATE"; do
+  [[ ! -L "$output" ]] || fail "Refusing symlink: $output"
+  [[ ! -e "$output" || -f "$output" ]] || fail "Expected a regular file: $output"
+done
+
+case "$ACTION" in
+  encrypt)
+    [[ -s "$PLAINTEXT" ]] || fail "Missing or empty $prefix.local.nix. Run '$UNLOCK_COMMAND' first."
+    if [[ -f "$CIPHERTEXT" ]]; then
+      read_state
+      [[ "$(digest "$CIPHERTEXT")" == "$saved_cipher" ]] || fail "$prefix.nix.age changed since unlock. Run '$UNLOCK_COMMAND' and resolve any local edits before encrypting."
+    fi
+    recipients="${PRIVATE_RECIPIENTS_FILE:-${APPS_RECIPIENTS_FILE:-$REPO_ROOT/keys/sergio.pub}}"
+    [[ -f "$recipients" ]] || fail "Recipients file missing: $recipients"
+    scratch="$(mktemp -d "$PRIVATE_DIR/.$prefix-tmp.XXXXXX")"
+    cp -- "$PLAINTEXT" "$scratch/input"
+    run_age --encrypt --armor --recipients-file "$recipients" --output "$scratch/content" "$scratch/input" || fail "Encryption failed; previous ciphertext was preserved."
+    printf '%s %s\n' "$(digest "$scratch/content")" "$(digest "$scratch/input")" > "$scratch/state"
+    chmod 644 "$scratch/content"
+    chmod 600 "$PLAINTEXT"
+    mv -f -- "$scratch/content" "$CIPHERTEXT"
+    mv -f -- "$scratch/state" "$STATE"
+    printf 'Private config (%s): encrypted hosts/%s/%s.nix.age\n' "$TARGET_HOST" "$TARGET_HOST" "$prefix"
+    ;;
+  unlock | ensure)
+    [[ -f "$CIPHERTEXT" ]] || fail "Missing $prefix.nix.age. Restore the encrypted file before building."
+    if [[ -f "$PLAINTEXT" ]]; then
+      read_state
+      if [[ "$(digest "$CIPHERTEXT")" == "$saved_cipher" ]]; then
+        # The local file may contain edits; they remain usable until encrypted.
+        chmod 600 "$PLAINTEXT"
+        exit 0
+      fi
+      [[ "$(digest "$PLAINTEXT")" == "$saved_plain" ]] || fail "Both $prefix.nix.age and $prefix.local.nix changed. Move $prefix.local.nix outside the repo, run '$UNLOCK_COMMAND', then merge your edits and run '$ENCRYPT_COMMAND'."
+    fi
+    decrypt
+    ;;
+esac

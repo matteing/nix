@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ $# -gt 1 ]]; then
+  printf 'Usage: %s {encrypt|unlock|ensure}\n' "$0" >&2
+  exit 2
+fi
+
+exec "$(dirname "${BASH_SOURCE[0]}")/private-config" "${1:-ensure}" matteing-mbp

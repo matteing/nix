@@ -1,0 +1,13 @@
+.DS_Store
+result
+result-*
+
+# Decrypted app module, local synchronization state, and atomic-write files.
+/hosts/matteing-mbp/apps.local.nix
+/hosts/matteing-mbp/apps.local.state
+/hosts/matteing-mbp/.apps-tmp.*
+
+# Private network names and host-specific encryption state.
+/hosts/homelab/network.local.nix
+/hosts/homelab/network.local.state
+/hosts/homelab/.network-tmp.*
