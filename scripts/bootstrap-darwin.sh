@@ -70,7 +70,9 @@ NIX_BIN="$nix_bin" "$REPO_ROOT/scripts/private-config" ensure "$HOST"
 
 say "Applying the nix-darwin configuration for $HOST"
 sudo -v
-"$nix_bin" run nix-darwin -- switch --flake "path:$REPO_ROOT#$HOST"
+sudo "$nix_bin" --extra-experimental-features 'nix-command flakes' run \
+  --no-write-lock-file --inputs-from "path:$REPO_ROOT" nix-darwin#darwin-rebuild \
+  -- switch --flake "path:$REPO_ROOT#$HOST"
 
 say "Bootstrap complete"
 printf 'Open a new terminal to load the configured environment.\n'

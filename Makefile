@@ -2,12 +2,12 @@
 
 HOST ?= $(shell hostname -s)
 BOOTSTRAP_HOST ?= matteing-mbp
-SYSTEM ?= $(shell nix eval --impure --raw --expr builtins.currentSystem 2>/dev/null)
+SYSTEM ?= $(shell nix --extra-experimental-features 'nix-command flakes' eval --impure --raw --expr builtins.currentSystem 2>/dev/null)
 FLAKE ?= path:$(CURDIR)\#$(HOST)
 SSH_PUBLIC_KEY ?= $(HOME)/.ssh/matteing-2026.pub
 REPO_SSH_PUBLIC_KEY := keys/sergio.pub
 
-.PHONY: help bootstrap init build test switch sync-ssh-key check check-host fmt update apps-unlock apps-encrypt private-unlock private-encrypt
+.PHONY: help bootstrap init build test switch sync-ssh-key check check-host fmt update unlock encrypt apps-unlock apps-encrypt private-unlock private-encrypt
 
 help:
 	@echo "Available targets:"
@@ -21,6 +21,8 @@ help:
 	@echo "  check-host Evaluate only the current host"
 	@echo "  fmt        Format all Nix files"
 	@echo "  update     Update flake inputs"
+	@echo "  unlock     Unlock once for HOST; retain local files between builds"
+	@echo "  encrypt    Save private edits for HOST as encrypted files"
 	@echo "  apps-unlock   Decrypt or refresh the local Mac app list"
 	@echo "  apps-encrypt  Encrypt local Mac app edits for Git"
 	@echo "  private-unlock   Decrypt or refresh private settings for HOST"
@@ -31,7 +33,8 @@ bootstrap:
 
 init:
 	@./scripts/private-config ensure "$(HOST)"
-	nix run nix-darwin -- switch --flake $(FLAKE)
+	sudo nix --extra-experimental-features 'nix-command flakes' run \
+		--no-write-lock-file --inputs-from "path:$(CURDIR)" nix-darwin\#darwin-rebuild -- switch --flake "$(FLAKE)"
 
 build:
 	@HOST=$(HOST) ./scripts/rebuild build
@@ -54,7 +57,7 @@ sync-ssh-key:
 check:
 	@./scripts/private-config ensure matteing-mbp
 	@./scripts/private-config ensure homelab
-	nix flake check "path:$(CURDIR)" --all-systems --no-build
+	nix --extra-experimental-features 'nix-command flakes' flake check "path:$(CURDIR)" --all-systems --no-build
 
 check-host:
 	@HOST=$(HOST) ./scripts/rebuild eval
@@ -65,16 +68,16 @@ apps-unlock:
 apps-encrypt:
 	@./scripts/apps encrypt
 
-private-unlock:
+unlock private-unlock:
 	@./scripts/private-config unlock "$(HOST)"
 
-private-encrypt:
+encrypt private-encrypt:
 	@./scripts/private-config encrypt "$(HOST)"
 
 fmt:
-	nix run "path:$(CURDIR)#formatter.$(SYSTEM)" -- \
+	nix --extra-experimental-features 'nix-command flakes' run "path:$(CURDIR)#formatter.$(SYSTEM)" -- \
 		--excludes hosts/homelab/hardware-configuration.nix \
 		"$(CURDIR)"
 
 update:
-	nix flake update
+	nix --extra-experimental-features 'nix-command flakes' flake update

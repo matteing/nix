@@ -19,13 +19,13 @@ esac
 "$REPO_ROOT/scripts/private-config" ensure "$HOST"
 
 if [[ "$ACTION" == "eval" ]]; then
-  platform="$(nix eval --raw --file "$REPO_ROOT/inventory.nix" "hosts.$HOST.platform")"
+  platform="$(nix --extra-experimental-features 'nix-command flakes' eval --raw --file "$REPO_ROOT/inventory.nix" "hosts.$HOST.platform")"
   case "$platform" in
     darwin) output="darwinConfigurations.$HOST.system.drvPath" ;;
     nixos) output="nixosConfigurations.$HOST.config.system.build.toplevel.drvPath" ;;
     *) printf 'Unsupported host platform: %s\n' "$platform" >&2; exit 1 ;;
   esac
-  nix eval --raw "path:$REPO_ROOT#$output"
+  nix --extra-experimental-features 'nix-command flakes' eval --raw "path:$REPO_ROOT#$output"
   printf '\n'
   exit 0
 fi

@@ -47,8 +47,10 @@ trap 'exit 143' TERM
 digest() {
   if command -v sha256sum >/dev/null 2>&1; then
     sha256sum "$1"
-  else
+  elif command -v shasum >/dev/null 2>&1; then
     shasum -a 256 "$1"
+  else
+    fail "SHA-256 tool missing. Install sha256sum or shasum."
   fi | awk '{ print $1 }'
 }
 
@@ -56,8 +58,30 @@ run_age() {
   if command -v age >/dev/null 2>&1; then
     age "$@"
   else
-    "${NIX_BIN:-nix}" run --no-write-lock-file "path:$REPO_ROOT#age" -- "$@"
+    command -v "${NIX_BIN:-nix}" >/dev/null 2>&1 || fail "age and Nix are unavailable. Install age, or install Nix and reopen your shell, then retry. No key or passphrase is needed for an already-unlocked checkout."
+    "${NIX_BIN:-nix}" --extra-experimental-features 'nix-command flakes' run --no-write-lock-file "path:$REPO_ROOT#age" -- "$@"
   fi
+}
+
+# Stock macOS has readlink but may not have realpath or readlink -f.
+# Resolve directory links and the final file link before checking key boundaries.
+identity_path() {
+  local path="$1" directory target links=0
+  [[ "$path" == /* ]] || path="$PWD/$path"
+  while :; do
+    directory="${path%/*}"
+    directory="$(cd -P -- "${directory:-/}" && pwd -P)" || fail "Cannot resolve identity directory."
+    path="$directory/${path##*/}"
+    [[ -L "$path" ]] || break
+    links=$((links + 1))
+    [[ "$links" -le 40 ]] || fail "Too many identity symlinks."
+    target="$(readlink "$path")" || fail "Cannot read identity symlink."
+    case "$target" in
+      /*) path="$target" ;;
+      *) path="$directory/$target" ;;
+    esac
+  done
+  printf '%s\n' "$path"
 }
 
 read_state() {
@@ -66,10 +90,19 @@ read_state() {
   [[ "$saved_cipher" =~ ^[0-9a-f]{64}$ && "$saved_plain" =~ ^[0-9a-f]{64}$ ]] || fail "Invalid $prefix.local.state; move $prefix.local.nix and $prefix.local.state outside the repo, then run '$UNLOCK_COMMAND'."
 }
 
+write_state() {
+  local cipher_hash plain_hash
+  # Check substitutions separately: printf can hide a hash command's failure.
+  cipher_hash="$(digest "$1")" || fail "Cannot hash ciphertext; existing files were preserved."
+  plain_hash="$(digest "$2")" || fail "Cannot hash plaintext; existing files were preserved."
+  [[ "$cipher_hash" =~ ^[0-9a-f]{64}$ && "$plain_hash" =~ ^[0-9a-f]{64}$ ]] || fail "Invalid SHA-256 output; existing files were preserved."
+  printf '%s %s\n' "$cipher_hash" "$plain_hash" > "$scratch/state"
+}
+
 decrypt() {
   local identity="${PRIVATE_IDENTITY:-${APPS_IDENTITY:-$HOME/.ssh/matteing-2026}}"
   [[ -f "$identity" ]] || fail "Identity file missing: $identity. Set PRIVATE_IDENTITY (or APPS_IDENTITY) to the matching private key outside the repository."
-  identity="$(realpath "$identity")"
+  identity="$(identity_path "$identity")"
   case "$identity" in
     "$REPO_ROOT"/* | /nix/store/*)
       fail "The identity must be outside the repository and /nix/store. path: flakes copy their directory into the store."
@@ -81,7 +114,7 @@ decrypt() {
   run_age --decrypt --identity "$identity" --output "$scratch/content" "$scratch/input" || fail "Decryption failed; existing files were preserved."
   [[ -s "$scratch/content" ]] || fail "Decrypted $prefix.local.nix is empty."
   chmod 600 "$scratch/content"
-  printf '%s %s\n' "$(digest "$scratch/input")" "$(digest "$scratch/content")" > "$scratch/state"
+  write_state "$scratch/input" "$scratch/content"
   mv -f -- "$scratch/content" "$PLAINTEXT"
   mv -f -- "$scratch/state" "$STATE"
   printf 'Private config (%s): unlocked hosts/%s/%s.local.nix\n' "$TARGET_HOST" "$TARGET_HOST" "$prefix"
@@ -105,7 +138,7 @@ case "$ACTION" in
     scratch="$(mktemp -d "$PRIVATE_DIR/.$prefix-tmp.XXXXXX")"
     cp -- "$PLAINTEXT" "$scratch/input"
     run_age --encrypt --armor --recipients-file "$recipients" --output "$scratch/content" "$scratch/input" || fail "Encryption failed; previous ciphertext was preserved."
-    printf '%s %s\n' "$(digest "$scratch/content")" "$(digest "$scratch/input")" > "$scratch/state"
+    write_state "$scratch/content" "$scratch/input"
     chmod 644 "$scratch/content"
     chmod 600 "$PLAINTEXT"
     mv -f -- "$scratch/content" "$CIPHERTEXT"
@@ -118,7 +151,7 @@ case "$ACTION" in
       read_state
       if [[ "$(digest "$CIPHERTEXT")" == "$saved_cipher" ]]; then
         # The local file may contain edits; they remain usable until encrypted.
-        chmod 600 "$PLAINTEXT"
+        chmod 600 "$PLAINTEXT" "$STATE"
         exit 0
       fi
       [[ "$(digest "$PLAINTEXT")" == "$saved_plain" ]] || fail "Both $prefix.nix.age and $prefix.local.nix changed. Move $prefix.local.nix outside the repo, run '$UNLOCK_COMMAND', then merge your edits and run '$ENCRYPT_COMMAND'."

@@ -33,16 +33,23 @@
       darwinConfigurations = lib.mapAttrs builders.mkDarwin darwinHosts;
       nixosConfigurations = lib.mapAttrs builders.mkNixos nixosHosts;
 
-      supportedSystems = lib.unique (map (host: host.system) (lib.attrValues inventory.hosts));
+      # Unlocking/editing is portable even when this checkout does not define a
+      # complete system configuration for the machine running the helper.
+      toolSystems = [
+        "aarch64-darwin"
+        "x86_64-darwin"
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
     in
     {
       inherit darwinConfigurations nixosConfigurations;
 
-      # Available before the encrypted Darwin app module is unlocked.
-      packages = lib.genAttrs supportedSystems (system: {
+      # Available before either private module is unlocked.
+      packages = lib.genAttrs toolSystems (system: {
         age = nixpkgs.legacyPackages.${system}.age;
       });
 
-      formatter = lib.genAttrs supportedSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
+      formatter = lib.genAttrs toolSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
     };
 }

@@ -88,6 +88,65 @@ transferred plaintext modules and receipts matching its encrypted files.
 
 ## Private configuration
 
+### Unlock once, then work normally
+
+This uses ordinary age on both macOS and Linux. There is no Keychain, GPG,
+Touch ID plugin, background agent, or custom encryption binary to configure.
+
+On a fresh checkout, restore the **existing matching private key** from your
+backup to `~/.ssh/matteing-2026` (mode `0600`), or point `PRIVATE_IDENTITY` at its
+location outside the checkout. A newly generated SSH key will not unlock these
+files. The public key committed in `keys/sergio.pub` is not enough to decrypt.
+
+Install Git and Bash, plus either [age](https://github.com/FiloSottile/age#installation)
+or [Nix](https://nix.dev/install-nix). If age is absent, the helper runs the
+flake's pinned age through Nix automatically; it does not require the host
+configuration to be unlocked first. The age tool output supports Apple Silicon
+and Intel Macs, and ARM64 and x86-64 Linux. On macOS, Apple's Command Line Tools
+provide Git and Make. On Linux, use your distribution's packages for Git, Make,
+and age, or install Nix. For the complete Mac setup, `make bootstrap` below
+installs Nix before unlocking, so no separate age installation is necessary.
+Age alone is enough to unlock and encrypt; formatting, evaluation, and rebuilds
+require Nix. The repository commands enable the required Nix features themselves.
+
+Then select the module explicitly; a new computer may not yet have the
+configured hostname:
+
+```console
+git clone https://github.com/matteing/nix ~/nix
+cd ~/nix
+make unlock HOST=matteing-mbp
+# Or, for the server module (from either macOS or Linux):
+make unlock HOST=homelab
+```
+
+If Make is not installed, the equivalent is
+`bash scripts/private-config unlock matteing-mbp` or
+`bash scripts/private-config unlock homelab`. If using a key at another path,
+prefix the command with `PRIVATE_IDENTITY=/external/path/to/existing-key`.
+Enter its passphrase locally in the terminal when prompted.
+
+Keep the decrypted `.local.nix` file **and** its `.local.state` receipt. Both
+remain Git-ignored, mode `0600`, and persist across reboots. Subsequent checks,
+builds, and edits reuse them without a key or a password prompt. After editing
+and formatting, save the encrypted version with `make encrypt HOST=<host>`;
+encryption needs only the public key and age, not the private key or passphrase.
+The existing `make apps-unlock` / `make apps-encrypt` commands still work.
+
+You decrypt again only when the local files are missing or incoming ciphertext
+has changed. Pulling unrelated changes does not prompt. If both encrypted and
+local versions changed, the helper stops for conflict resolution instead of
+overwriting your work. Do not delete the local files between builds.
+
+This protects what is published to Git, not the running machine: plaintext
+remains on disk and enters the world-readable Nix store. The portable unlock
+workflow does not make the complete machine profiles portable: the Mac profile
+still targets an Apple Silicon Mac and the `sergio` account; `homelab` is a
+specific x86-64 NixOS machine. Unlocking on Ubuntu, for example, does not install
+or activate the NixOS profile.
+
+### Files and everyday edits
+
 Private configuration is encrypted with age for the SSH public key in
 `keys/sergio.pub`. Each public loader imports a decrypted `.local.nix` module;
 that module and its `.local.state` synchronization receipt are ignored by Git.
@@ -172,11 +231,20 @@ committed with the new source snapshot.
 Run the helper's isolated tests with temporary keys and fixture files:
 
 ```console
-nix shell path:.#age -c bash tests/apps-encryption.sh
+nix --extra-experimental-features 'nix-command flakes' shell path:.#age -c bash tests/apps-encryption.sh
 ```
 
-With age and age-keygen already in `PATH`, use `bash tests/apps-encryption.sh`.
+With age, age-keygen, and ssh-keygen already in `PATH`, use `bash tests/apps-encryption.sh`.
 These tests do not use the real private key or activate a system configuration.
+
+The bootstrap harness also runs without installing Nix or activating macOS:
+
+```console
+bash tests/bootstrap-darwin.sh
+```
+
+The helper CI runs both harnesses on macOS and Ubuntu using only disposable
+fixture keys. It does not decrypt this repository's private modules.
 
 ## macOS bootstrap
 
@@ -190,6 +258,10 @@ git clone https://github.com/matteing/nix ~/nix
 cd ~/nix
 make bootstrap
 ```
+
+`make bootstrap` selects `matteing-mbp` even before the new Mac has that hostname.
+It unlocks as your normal user and runs system activation with sudo.
+For unlock-only preparation without activation, use the commands above instead.
 
 Open a new Zsh session after bootstrap, then install the Mac development
 runtimes:
