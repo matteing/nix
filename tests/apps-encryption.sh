@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Fixtures must not inherit a developer's real key or recipient overrides.
-unset APPS_IDENTITY APPS_RECIPIENTS_FILE PRIVATE_IDENTITY PRIVATE_RECIPIENTS_FILE HOST NIX_BIN
+unset APPS_IDENTITY APPS_RECIPIENTS_FILE PRIVATE_IDENTITY PRIVATE_IDENTITY_OP_REF PRIVATE_RECIPIENTS_FILE HOST NIX_BIN
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPO_ROOT
@@ -318,4 +318,120 @@ cmp -s "$TEST_ROOT/fresh-edited.nix" "$FRESH_PLAIN" || fail 'SSH-ed25519 roundtr
 assert_private_mode "$FRESH_PLAIN" "$FRESH_STATE"
 assert_atomic "$FRESH_DIR"
 
-printf 'PASS: Mac and Linux-compatible age roundtrips, fresh clones, decrypt-once reuse, Nix/SHA fallbacks, host isolation, conflicts, permissions, and identity boundaries\n'
+# The optional 1Password source supplies the same SSH identity through stdin.
+# Stub op reads only the disposable key outside the clone; no real vault is used.
+readonly OP_BIN="$TEST_ROOT/op-bin"
+mkdir "$OP_BIN"
+cat >"$OP_BIN/op" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $# == 2 && "$1" == read && "$2" == "$TEST_OP_EXPECTED_REF" ]]
+printf 'read\n' >>"$TEST_OP_LOG"
+if [[ "${TEST_OP_BEHAVIOR:-success}" == fail-before ]]; then
+  printf 'Fixture authorization failed.\n' >&2
+  exit 71
+fi
+"$TEST_CAT_BIN" "$TEST_OP_KEY"
+if [[ "${TEST_OP_BEHAVIOR:-success}" == fail-after ]]; then
+  printf 'Fixture read failed after output.\n' >&2
+  exit 72
+fi
+EOF
+chmod +x "$OP_BIN/op"
+TEST_CAT_BIN="$(command -v cat)"
+export TEST_CAT_BIN TEST_OP_KEY="$TEST_ROOT/ssh-identity" TEST_OP_LOG="$TEST_ROOT/op.log"
+export TEST_OP_EXPECTED_REF='op://Fixture vault/Fixture SSH key/private key?ssh-format=openssh'
+run_op_private() {
+  PATH="$OP_BIN:$PATH" PRIVATE_IDENTITY_OP_REF="$TEST_OP_EXPECTED_REF" \
+    PRIVATE_IDENTITY="$TEST_ROOT/no-private-key" APPS_IDENTITY="$TEST_ROOT/no-private-key" \
+    "$BASH" "$FRESH/scripts/private-config" "$@"
+}
+assert_no_op_key_file() {
+  if grep -rEq -- '^(AGE-SECRET-KEY-|-----BEGIN [A-Z ]*PRIVATE KEY-----)' "$FRESH"; then
+    fail '1Password decryption stored private key material inside the clone'
+  fi
+}
+rm "$FRESH_PLAIN"
+run_op_private unlock
+cmp -s "$TEST_ROOT/fresh-edited.nix" "$FRESH_PLAIN" || fail '1Password SSH identity stdin roundtrip changed plaintext'
+[[ "$(wc -l <"$TEST_OP_LOG")" -eq 1 ]] || fail '1Password unlock did not read the configured key exactly once'
+assert_private_mode "$FRESH_PLAIN" "$FRESH_STATE"
+assert_atomic "$FRESH_DIR"
+assert_no_op_key_file
+
+# A cached receipt and public-key encryption must not contact 1Password, even
+# when its identity source would fail. Preserve local edits across cached use.
+printf '\n# Edits after 1Password unlock\n' >>"$FRESH_PLAIN"
+cp "$FRESH_PLAIN" "$TEST_ROOT/op-edited.nix"
+cp "$FRESH_STATE" "$TEST_ROOT/op-before-reuse.state"
+for action in ensure unlock; do
+  TEST_OP_BEHAVIOR=fail-before run_op_private "$action"
+done
+cmp -s "$TEST_ROOT/op-edited.nix" "$FRESH_PLAIN" || fail 'Cached 1Password unlock lost local edits'
+cmp -s "$TEST_ROOT/op-before-reuse.state" "$FRESH_STATE" || fail 'Cached 1Password unlock changed the receipt'
+TEST_OP_BEHAVIOR=fail-before PRIVATE_RECIPIENTS_FILE="$TEST_ROOT/ssh-identity.pub" run_op_private encrypt
+[[ "$(wc -l <"$TEST_OP_LOG")" -eq 1 ]] || fail 'Cached unlock or encryption unnecessarily contacted 1Password'
+"$AGE_BIN" --decrypt -i "$TEST_ROOT/ssh-identity" -o "$TEST_ROOT/op-roundtrip.nix" "$FRESH_DIR/apps.nix.age"
+cmp -s "$TEST_ROOT/op-edited.nix" "$TEST_ROOT/op-roundtrip.nix" || fail 'Encryption after 1Password unlock changed plaintext'
+assert_private_mode "$FRESH_PLAIN" "$FRESH_STATE"
+assert_atomic "$FRESH_DIR"
+assert_no_op_key_file
+
+# Reject invalid references and missing op with guidance, before creating any
+# plaintext or changing the previous receipt/ciphertext. A minimal PATH cannot
+# accidentally invoke an installed op on the machine running the tests.
+cp "$FRESH_STATE" "$TEST_ROOT/op-before-failure.state"
+cp "$FRESH_DIR/apps.nix.age" "$TEST_ROOT/op-before-failure.age"
+rm "$FRESH_PLAIN"
+PATH="$OP_BIN:$BASE_BIN" PRIVATE_IDENTITY_OP_REF='invalid-reference' \
+  PRIVATE_IDENTITY="$TEST_ROOT/no-private-key" expect_failure "$BASH" "$FRESH/scripts/private-config" unlock
+[[ "$(<"$TEST_ROOT/failure.log")" == *'op://'* ]] || fail 'Invalid 1Password reference did not give format guidance'
+PATH="$BASE_BIN" PRIVATE_IDENTITY_OP_REF="$TEST_OP_EXPECTED_REF" \
+  PRIVATE_IDENTITY="$TEST_ROOT/no-private-key" expect_failure "$BASH" "$FRESH/scripts/private-config" unlock
+[[ "$(<"$TEST_ROOT/failure.log")" == *'1Password CLI'* ]] || fail 'Missing op did not give installation guidance'
+[[ ! -e "$FRESH_PLAIN" ]] || fail 'Invalid or unavailable 1Password source created plaintext'
+[[ "$(wc -l <"$TEST_OP_LOG")" -eq 1 ]] || fail 'Invalid reference contacted 1Password'
+cmp -s "$TEST_ROOT/op-before-failure.state" "$FRESH_STATE" || fail 'Invalid or unavailable 1Password source changed the receipt'
+cmp -s "$TEST_ROOT/op-before-failure.age" "$FRESH_DIR/apps.nix.age" || fail 'Invalid or unavailable 1Password source changed ciphertext'
+assert_atomic "$FRESH_DIR"
+run_op_private unlock
+
+# A changed ciphertext triggers refresh of clean plaintext. Even if op emits
+# the complete, correct private key before failing, pipefail must prevent that
+# refresh from being published. The prior plaintext and receipt stay intact.
+cp "$FRESH_PLAIN" "$TEST_ROOT/op-before-refresh.nix"
+cp "$FRESH_STATE" "$TEST_ROOT/op-before-refresh.state"
+printf '{ ... }: {}\n# Remote change after 1Password unlock\n' >"$TEST_ROOT/op-remote.nix"
+"$AGE_BIN" --encrypt -R "$TEST_ROOT/ssh-identity.pub" -o "$TEST_ROOT/op-remote.age" "$TEST_ROOT/op-remote.nix"
+cp "$TEST_ROOT/op-remote.age" "$FRESH_DIR/apps.nix.age"
+for behavior in fail-before fail-after; do
+  TEST_OP_BEHAVIOR="$behavior" expect_failure run_op_private unlock
+  cmp -s "$TEST_ROOT/op-before-refresh.nix" "$FRESH_PLAIN" || fail 'Failed 1Password read replaced plaintext'
+  cmp -s "$TEST_ROOT/op-before-refresh.state" "$FRESH_STATE" || fail 'Failed 1Password read replaced the receipt'
+  cmp -s "$TEST_ROOT/op-remote.age" "$FRESH_DIR/apps.nix.age" || fail 'Failed 1Password read changed ciphertext'
+  assert_private_mode "$FRESH_PLAIN" "$FRESH_STATE"
+  assert_atomic "$FRESH_DIR"
+  assert_no_op_key_file
+done
+run_op_private unlock
+cmp -s "$TEST_ROOT/op-remote.nix" "$FRESH_PLAIN" || fail 'Recovery after 1Password read failure changed plaintext'
+assert_private_mode "$FRESH_PLAIN" "$FRESH_STATE"
+assert_atomic "$FRESH_DIR"
+assert_no_op_key_file
+
+# Fresh bootstrap obtains age through Nix. The identity pipe must survive that
+# launcher as well, while op remains the only available identity source.
+nix_calls_before_op="$(wc -l <"$TEST_NIX_LOG")"
+op_calls_before_nix="$(wc -l <"$TEST_OP_LOG")"
+rm "$FRESH_PLAIN"
+PATH="$OP_BIN:$BASE_BIN" NIX_BIN="$TEST_ROOT/nix-launcher" \
+  PRIVATE_IDENTITY_OP_REF="$TEST_OP_EXPECTED_REF" PRIVATE_IDENTITY="$TEST_ROOT/no-private-key" \
+  "$BASH" "$FRESH/scripts/private-config" unlock
+[[ "$(wc -l <"$TEST_NIX_LOG")" -eq $((nix_calls_before_op + 1)) ]] || fail '1Password unlock did not invoke the Nix age fallback'
+[[ "$(wc -l <"$TEST_OP_LOG")" -eq $((op_calls_before_nix + 1)) ]] || fail 'Nix fallback did not read the 1Password identity exactly once'
+cmp -s "$TEST_ROOT/op-remote.nix" "$FRESH_PLAIN" || fail '1Password identity through Nix fallback changed plaintext'
+assert_private_mode "$FRESH_PLAIN" "$FRESH_STATE"
+assert_atomic "$FRESH_DIR"
+assert_no_op_key_file
+
+printf 'PASS: Mac and Linux-compatible age roundtrips, 1Password stdin identities, fresh clones, decrypt-once reuse, Nix/SHA fallbacks, host isolation, conflicts, permissions, and identity boundaries\n'

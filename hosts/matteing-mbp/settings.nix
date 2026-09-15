@@ -1,8 +1,5 @@
-{ user, ... }:
+{ ... }:
 
-let
-  wallpaper = ../../assets/wallpapers/orange-wave.jpg;
-in
 {
   system.defaults = {
     dock = {
@@ -30,8 +27,5 @@ in
 
   system.activationScripts.postActivation.text = ''
     /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-
-    sudo -u ${user.username} osascript -e \
-      'tell application "System Events" to tell every desktop to set picture to "${wallpaper}" as POSIX file'
   '';
 }

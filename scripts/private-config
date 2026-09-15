@@ -101,17 +101,30 @@ write_state() {
 
 decrypt() {
   local identity="${PRIVATE_IDENTITY:-${APPS_IDENTITY:-$HOME/.ssh/matteing-2026}}"
-  [[ -f "$identity" ]] || fail "Identity file missing: $identity. Set PRIVATE_IDENTITY (or APPS_IDENTITY) to the matching private key outside the repository."
-  identity="$(identity_path "$identity")"
-  case "$identity" in
-    "$REPO_ROOT"/* | /nix/store/*)
-      fail "The identity must be outside the repository and /nix/store. path: flakes copy their directory into the store."
-      ;;
-  esac
+  if [[ -n "${PRIVATE_IDENTITY_OP_REF:-}" ]]; then
+    [[ "$PRIVATE_IDENTITY_OP_REF" == op://* ]] || fail "PRIVATE_IDENTITY_OP_REF must be an op:// secret reference."
+    command -v op >/dev/null 2>&1 || fail "Install the 1Password CLI and enable its desktop app integration before using PRIVATE_IDENTITY_OP_REF."
+  else
+    [[ -f "$identity" ]] || fail "Identity file missing: $identity. Set PRIVATE_IDENTITY (or APPS_IDENTITY) to the matching private key outside the repository, or use PRIVATE_IDENTITY_OP_REF for 1Password CLI."
+    identity="$(identity_path "$identity")"
+    case "$identity" in
+      "$REPO_ROOT"/* | /nix/store/*)
+        fail "The identity must be outside the repository and /nix/store. path: flakes copy their directory into the store."
+        ;;
+    esac
+  fi
 
   scratch="$(mktemp -d "$PRIVATE_DIR/.$prefix-tmp.XXXXXX")"
   cp -- "$CIPHERTEXT" "$scratch/input"
-  run_age --decrypt --identity "$identity" --output "$scratch/content" "$scratch/input" || fail "Decryption failed; existing files were preserved."
+  if [[ -n "${PRIVATE_IDENTITY_OP_REF:-}" ]]; then
+    # Keep the exported private key in the pipe; never save it in the checkout,
+    # a temporary key file, or the Nix store. pipefail also catches a failed read.
+    op read "$PRIVATE_IDENTITY_OP_REF" |
+      run_age --decrypt --identity - --output "$scratch/content" "$scratch/input" ||
+      fail "1Password key retrieval or decryption failed; existing files were preserved."
+  else
+    run_age --decrypt --identity "$identity" --output "$scratch/content" "$scratch/input" || fail "Decryption failed; existing files were preserved."
+  fi
   [[ -s "$scratch/content" ]] || fail "Decrypted $prefix.local.nix is empty."
   chmod 600 "$scratch/content"
   write_state "$scratch/input" "$scratch/content"

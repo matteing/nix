@@ -31,7 +31,7 @@ hosts/matteing-mbp/apps.nix.age   encrypted Mac apps and app-specific settings
 hosts/matteing-mbp/apps.local.nix decrypted app module (ignored by Git)
 hosts/matteing-mbp/apps.local.state
                                   local synchronization receipt (ignored by Git)
-hosts/matteing-mbp/settings.nix   general macOS defaults and wallpaper
+hosts/matteing-mbp/settings.nix   general macOS defaults
 hosts/homelab/default.nix         complete handwritten server policy
 hosts/homelab/network.nix         public loader for private network settings
 hosts/homelab/network.nix.age     encrypted network name and PSK reference
@@ -90,13 +90,16 @@ transferred plaintext modules and receipts matching its encrypted files.
 
 ### Unlock once, then work normally
 
-This uses ordinary age on both macOS and Linux. There is no Keychain, GPG,
-Touch ID plugin, background agent, or custom encryption binary to configure.
+This uses ordinary age on both macOS and Linux. The default decryption path
+uses a private key file and needs no Keychain, GPG, Touch ID plugin, background
+agent, or custom encryption binary. An optional 1Password CLI path is documented
+below; the Mac bootstrap also checks that 1Password's SSH agent is ready.
 
 On a fresh checkout, restore the **existing matching private key** from your
 backup to `~/.ssh/matteing-2026` (mode `0600`), or point `PRIVATE_IDENTITY` at its
 location outside the checkout. A newly generated SSH key will not unlock these
-files. The public key committed in `keys/sergio.pub` is not enough to decrypt.
+files. Alternatively, use the existing key through the optional 1Password CLI
+mode below. The public key committed in `keys/sergio.pub` is not enough to decrypt.
 
 Install Git and Bash, plus either [age](https://github.com/FiloSottile/age#installation)
 or [Nix](https://nix.dev/install-nix). If age is absent, the helper runs the
@@ -168,6 +171,39 @@ If the SSH key has a passphrase, age prompts for it in your terminal when
 decryption is needed. It cannot use an already-unlocked SSH agent. Keep a backup
 of the private key and its passphrase so the encrypted modules remain recoverable.
 `APPS_IDENTITY` remains supported when `PRIVATE_IDENTITY` is unset.
+
+### Optional: retrieve the decryption key from 1Password
+
+The 1Password SSH agent cannot decrypt the existing age files: the agent offers
+SSH signing, while age needs the private key for decryption. The helper can
+instead retrieve the **existing matching SSH private key** through the
+1Password CLI and pipe it directly into age. This keeps the same recipient,
+ciphertext, and decrypt-once receipt workflow. It creates no private key file or
+key cache; the key passes through the CLI and age processes in memory.
+
+Mac bootstrap installs 1Password and its CLI if missing. For unlock-only use,
+install the [1Password CLI](https://developer.1password.com/docs/cli/get-started/)
+first. Enable **Integrate with 1Password CLI** under **Settings > Developer** in
+the desktop app; this is separate from the SSH agent setting. Then use the SSH
+Key item's private-key secret reference with OpenSSH formatting:
+
+```console
+PRIVATE_IDENTITY_OP_REF='op://VAULT/ITEM/private key?ssh-format=openssh' make unlock HOST=matteing-mbp
+# The same option works for the server module:
+PRIVATE_IDENTITY_OP_REF='op://VAULT/ITEM/private key?ssh-format=openssh' make private-unlock HOST=homelab
+```
+
+Replace `VAULT` and `ITEM` locally; keep actual vault/item references out of
+public configuration. When set, `PRIVATE_IDENTITY_OP_REF` takes precedence over
+`PRIVATE_IDENTITY` and `APPS_IDENTITY`. The CLI is called only when decryption is
+needed. Matching plaintext and receipt files are reused without contacting
+1Password, and encryption still needs only the public recipient. A failed or
+cancelled CLI request preserves existing files and receipts.
+
+See [1Password's SSH key export format](https://developer.1password.com/docs/cli/ssh-keys/)
+and [age's SSH key support](https://github.com/FiloSottile/age#ssh-keys).
+
+### Editing and saving private modules
 
 For Mac edits, the original app commands remain available:
 
@@ -248,15 +284,46 @@ fixture keys. It does not decrypt this repository's private modules.
 
 ## macOS bootstrap
 
+Bootstrap first installs **1Password and 1Password CLI** if they are missing,
+using official downloads with pinned versions and SHA-256 checksums. This works
+before Nix or Homebrew is installed. It requests administrator access when an
+installation is needed and reuses existing installations on later runs. The
+app archive retains automatic updates. Its code signature is checked before
+continuing, so an incomplete installation must be repaired before a retry can
+proceed.
+
+After installation, bootstrap checks that the CLI runs and the 1Password SSH
+agent can list keys. If the agent is not ready, it opens 1Password and stops
+**before downloading or installing Determinate Nix**. Sign in, unlock the app,
+enable **SSH agent** and **Integrate with 1Password CLI** in **Settings >
+Developer**, and make an SSH key available to the agent. Then rerun the same
+bootstrap command. Account sign-in and those settings require your interaction.
+
+New installations go to `/Applications/1Password.app` and `/usr/local/bin/op`.
+The CLI directory is added to bootstrap's PATH for the current run. For custom
+locations or a socket, set `ONEPASSWORD_APP`, `ONEPASSWORD_CLI_DIR`, or
+`ONEPASSWORD_SSH_AUTH_SOCK`. Bootstrap queries 1Password's socket directly, so an
+unrelated `SSH_AUTH_SOCK` does not satisfy the check, and an `IdentityAgent`-only
+SSH configuration works.
+See the [1Password SSH setup guide](https://developer.1password.com/docs/ssh/get-started/)
+to configure SSH clients as well.
+
 Restore the private key matching `keys/sergio.pub` to `~/.ssh/matteing-2026`
-before bootstrap, or set `PRIVATE_IDENTITY` to its external location. Then install
-Apple's Command Line Tools, clone, and bootstrap:
+before bootstrap, set `PRIVATE_IDENTITY` to its external location, or use the
+optional `PRIVATE_IDENTITY_OP_REF` mode above. Then install Apple's Command Line
+Tools, clone, and bootstrap:
 
 ```console
 xcode-select --install
 git clone https://github.com/matteing/nix ~/nix
 cd ~/nix
 make bootstrap
+```
+
+For 1Password CLI decryption, replace the final command with:
+
+```console
+PRIVATE_IDENTITY_OP_REF='op://VAULT/ITEM/private key?ssh-format=openssh' make bootstrap
 ```
 
 `make bootstrap` selects `matteing-mbp` even before the new Mac has that hostname.
