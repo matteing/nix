@@ -9,6 +9,7 @@ retain ignored plaintext plus its receipt across builds and reboots. Fresh-machi
 commands must select HOST explicitly. Do not introduce Keychain, GPG, native
 helpers, or a key cache unless the user requests a different design.
 
+- Never set or manage the Mac wallpaper; leave it under manual user control.
 - Mac apps, app-specific preferences, Dock entries, terminal settings, and shell
   integrations belong in ignored `hosts/matteing-mbp/apps.local.nix`, not public
   loaders or other public modules. Run `make apps-unlock` before editing.
