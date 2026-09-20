@@ -8,6 +8,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./maintenance.nix
     ./network.nix
   ];
 
